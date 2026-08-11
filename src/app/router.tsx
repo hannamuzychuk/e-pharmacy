@@ -15,6 +15,7 @@ export const router = createBrowserRouter([
     path: "/",
     element: <SharedLayout />,
     children: [
+      { index: true, element: <Navigate to="/login" replace /> },
       {
         element: <PublicRoute />,
         children: [
