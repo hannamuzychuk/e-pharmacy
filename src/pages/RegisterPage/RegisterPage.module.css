@@ -132,8 +132,18 @@
   transition: background-color 0.2s ease;
 }
 
-.submit:hover:not(:disabled) {
+.submit:hover:not(:disabled),
+.submit:focus-visible:not(:disabled) {
   background: var(--color-primary-hover);
+}
+
+.submit:focus {
+  outline: none;
+}
+
+.submit:focus-visible {
+  outline: 2px solid var(--color-primary-hover);
+  outline-offset: 2px;
 }
 
 .submit:disabled {

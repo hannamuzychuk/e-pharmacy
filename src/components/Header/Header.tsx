@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react";
 import { useAuth } from "../../store/auth";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import styles from "./Header.module.css";
 import logoMobile from "../../images/logo-mobile.png";
 import logoDesktop from "../../images/logo-desktop.png";
@@ -19,11 +20,46 @@ function LogoMark() {
   );
 }
 
+const desktopNavItems = [
+  { to: "/shop", label: "Shop" },
+  { to: "/medicine", label: "Medicine" },
+  { to: "/statistics", label: "Statistics" },
+];
+
+const mobileNavItems = [
+  { to: "/shop", label: "Home" },
+  { to: "/medicine", label: "Medicine store" },
+  { to: "/statistics", label: "Medicine" },
+];
+
 export function Header() {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsMenuOpen(false);
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isMenuOpen]);
 
   const handleLogout = () => {
+    setIsMenuOpen(false);
     logout();
     navigate("/login");
   };
@@ -45,14 +81,94 @@ export function Header() {
         <LogoMark />
         <span>E-Pharmacy</span>
       </Link>
-      <nav className={styles.nav}>
-        <NavLink to="/shop">Shop</NavLink>
-        <NavLink to="/medicine">Medicine</NavLink>
-        <NavLink to="/statistics">Statistics</NavLink>
+
+      <nav className={styles.nav} aria-label="Main">
+        {desktopNavItems.map((item) => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            className={({ isActive }) =>
+              isActive ? styles.navLinkActive : styles.navLink
+            }
+          >
+            {item.label}
+          </NavLink>
+        ))}
       </nav>
+
       <button className={styles.logout} type="button" onClick={handleLogout}>
         Log out
       </button>
+
+      <button
+        className={styles.menuButton}
+        type="button"
+        aria-label="Open menu"
+        aria-expanded={isMenuOpen}
+        onClick={() => setIsMenuOpen(true)}
+      >
+        <svg
+          className={styles.menuIcon}
+          width="32"
+          height="26"
+          aria-hidden="true"
+        >
+          <use href="/icons.svg#icon-menu" />
+        </svg>
+      </button>
+
+      {isMenuOpen && (
+        <div className={styles.mobileMenu} role="dialog" aria-modal="true">
+          <button
+            className={styles.backdrop}
+            type="button"
+            aria-label="Close menu"
+            onClick={() => setIsMenuOpen(false)}
+          />
+
+          <aside className={styles.drawer}>
+            <button
+              className={styles.closeButton}
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <svg
+                className={styles.closeIcon}
+                width="32"
+                height="32"
+                aria-hidden="true"
+              >
+                <use href="/icons.svg#icon-close" />
+              </svg>
+            </button>
+
+            <nav className={styles.drawerNav} aria-label="Mobile">
+              <div className={styles.drawerLinks}>
+                {mobileNavItems.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    className={({ isActive }) =>
+                      isActive ? styles.drawerLinkActive : styles.drawerLink
+                    }
+                  >
+                    {item.label}
+                  </NavLink>
+                ))}
+              </div>
+            </nav>
+
+            <button
+              className={styles.drawerLogout}
+              type="button"
+              onClick={handleLogout}
+            >
+              Log out
+            </button>
+          </aside>
+        </div>
+      )}
     </header>
   );
 }
