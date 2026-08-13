@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { AddMedicineModal } from "../../components/AddMedicineModal/AddMedicineModal";
+import { EditMedicineModal } from "../../components/EditMedicineModal/EditMedicineModal";
+import { DeleteMedicineModal } from "../../components/DeleteMedicineModal/DeleteMedicineModal";
 import styles from "./ShopPage.module.css";
 import createShopMobile from "../../images/create-shop-mobile.jpg";
 import pillMobile from "../../images/mobile-white-round-pill.png";
@@ -23,7 +25,7 @@ const shopInfo = {
   phone: "595-08-2102",
 };
 
-const mockProducts: Product[] = [
+const initialProducts: Product[] = [
   {
     id: "1",
     name: "Hydrochloride",
@@ -71,21 +73,29 @@ const mockProducts: Product[] = [
 export function ShopPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<ShopTab>("drugStore");
+  const [products, setProducts] = useState(initialProducts);
+  const [isAddMedicineOpen, setIsAddMedicineOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
 
   const handleEditData = () => {
     navigate("/edit-shop");
   };
 
   const handleAddMedicine = () => {
-    toast("Add medicine modal — coming soon");
+    setIsAddMedicineOpen(true);
   };
 
   const handleEditProduct = (product: Product) => {
-    toast(`Edit ${product.name} — coming soon`);
+    setEditingProduct(product);
   };
 
   const handleDeleteProduct = (product: Product) => {
-    toast(`Delete ${product.name} — coming soon`);
+    setDeletingProduct(product);
+  };
+
+  const handleProductDeleted = (productId: string) => {
+    setProducts((prev) => prev.filter((item) => item.id !== productId));
   };
 
   return (
@@ -168,7 +178,7 @@ export function ShopPage() {
 
       {activeTab === "drugStore" ? (
         <ul className={styles.productList}>
-          {mockProducts.map((product) => (
+          {products.map((product) => (
             <li key={product.id} className={styles.product}>
               <img
                 className={styles.productImage}
@@ -208,6 +218,25 @@ export function ShopPage() {
       ) : (
         <p className={styles.placeholder}>All medicine filters — coming soon</p>
       )}
+
+      {isAddMedicineOpen ? (
+        <AddMedicineModal onClose={() => setIsAddMedicineOpen(false)} />
+      ) : null}
+
+      {editingProduct ? (
+        <EditMedicineModal
+          product={editingProduct}
+          onClose={() => setEditingProduct(null)}
+        />
+      ) : null}
+
+      {deletingProduct ? (
+        <DeleteMedicineModal
+          product={deletingProduct}
+          onClose={() => setDeletingProduct(null)}
+          onDeleted={handleProductDeleted}
+        />
+      ) : null}
     </div>
   );
 }

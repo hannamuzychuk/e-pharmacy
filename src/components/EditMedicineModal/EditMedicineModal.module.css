@@ -1,0 +1,23 @@
+.inputFilled {
+  border-color: var(--color-primary);
+}
+
+.textareaShellFilled {
+  border-color: var(--color-primary);
+}
+
+.submitBtn {
+  flex: 0 0 148px;
+  width: 148px;
+  white-space: nowrap;
+  padding: 0 12px;
+}
+
+@media (min-width: 768px) {
+  .submitBtn {
+    flex: 0 0 148px;
+    width: 148px;
+    min-width: 148px;
+    padding: 0 26px;
+  }
+}

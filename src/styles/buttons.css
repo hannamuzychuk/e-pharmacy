@@ -55,7 +55,8 @@
 
 .btnCancel {
   background: var(--color-cancel);
-  color: var(--color-text);
+  color: var(--color-text-muted);
+  font-weight: 400;
 }
 
 .btnCancel:hover:not(:disabled),
