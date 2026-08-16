@@ -1,0 +1,51 @@
+.card {
+  box-sizing: border-box;
+  padding: 20px;
+  border-radius: 27px;
+  background: var(--color-white);
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 33px;
+  padding: 0 25px;
+  border: none;
+  border-radius: 40px;
+  background: var(--color-primary-soft);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.tabActive {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.content {
+  margin-top: 20px;
+}
+
+@media (min-width: 768px) {
+  .card {
+    padding: 32px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .card {
+    flex: 1;
+    min-width: 0;
+    padding: 40px 40px 80px;;
+  }
+}

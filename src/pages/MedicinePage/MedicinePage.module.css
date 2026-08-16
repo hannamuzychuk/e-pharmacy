@@ -1,0 +1,23 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 64px 20px 80px;
+  background: var(--color-bg);
+}
+
+@media (min-width: 768px) {
+  .page {
+    gap: 16px;
+    padding: 80px 32px 80px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .page {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 100px 128px;
+  }
+}

@@ -1,0 +1,20 @@
+.description {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.paragraph {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.muted {
+  color: #6a6a6f;
+}
+
+.text {
+  color: var(--color-text);
+}

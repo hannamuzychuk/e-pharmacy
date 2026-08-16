@@ -1,0 +1,166 @@
+.overview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 337px;
+  object-fit: cover;
+  border: 1.15px solid rgba(89, 177, 122, 0.6);
+  border-radius: 27px;
+  background: #f7f7f7;
+}
+
+.infoCard {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 20px;
+  background: var(--color-white);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.supplier {
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+.priceHeader,
+.priceFooter {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.priceHeader {
+  flex-shrink: 0;
+}
+
+.priceFooter {
+  display: none;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.addBtn {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  width: 144px;
+  min-width: 144px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0 16px;
+  font-size: 14px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .overview {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .image {
+    flex-shrink: 0;
+    width: 364px;
+    height: 284px;
+  }
+
+  .infoCard {
+    flex: 1;
+    min-width: 0;
+    justify-content: space-between;
+    padding: 32px;
+  }
+
+  .priceHeader {
+    display: none;
+  }
+
+  .priceFooter {
+    display: block;
+    font-size: 20px;
+    line-height: 1.4;
+  }
+
+  .footer {
+    margin-top: 0;
+  }
+
+  .name {
+    font-size: 20px;
+    line-height: 1.4;
+  }
+}
+
+@media (min-width: 1440px) {
+  .overview {
+    flex-direction: column;
+    flex-shrink: 0;
+    width: 364px;
+    gap: 20px;
+  }
+
+  .image {
+    width: 364px;
+    height: 337px;
+  }
+
+  .infoCard {
+    flex: none;
+    width: 100%;
+    justify-content: flex-start;
+    padding: 20px;
+  }
+
+  .priceHeader {
+    display: block;
+    font-size: 20px;
+    line-height: 1.4;
+  }
+
+  .priceFooter {
+    display: none;
+  }
+
+  .footer {
+    margin-top: 20px;
+    justify-content: flex-start;
+  }
+}
