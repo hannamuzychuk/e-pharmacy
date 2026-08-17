@@ -1,9 +1,13 @@
 .layout {
   display: flex;
   flex-direction: column;
+  min-width: 0;
   min-height: 100svh;
+  overflow-x: hidden;
 }
 
 .main {
   flex: 1 0 auto;
+  min-width: 0;
+  max-width: 100%;
 }

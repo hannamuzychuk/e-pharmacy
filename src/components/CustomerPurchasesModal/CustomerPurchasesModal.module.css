@@ -1,0 +1,146 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(29, 30, 33, 0.45);
+  overflow-y: auto;
+}
+
+.modal {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 335px;
+  padding: 40px 20px;
+  border-radius: 20px;
+  background: var(--color-white);
+}
+
+.closeBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.closeIcon {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 12px 0 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.email {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.29;
+  color: var(--color-text-secondary);
+}
+
+.status {
+  margin: 24px 0 0;
+  font-size: 14px;
+  line-height: 1.29;
+  color: var(--color-text-secondary);
+}
+
+.table {
+  width: 100%;
+  margin-top: 24px;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 12px 0;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.17;
+}
+
+.table th {
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table td {
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table th:last-child,
+.table td:last-child {
+  text-align: right;
+}
+
+@media (min-width: 768px) {
+  .modal {
+    max-width: 536px;
+    padding: 50px 40px;
+  }
+
+  .closeBtn {
+    width: 24px;
+    height: 24px;
+  }
+
+  .closeIcon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .title {
+    font-size: 28px;
+    line-height: 1.14;
+  }
+
+  .meta {
+    margin-top: 14px;
+    font-size: 18px;
+  }
+
+  .email {
+    font-size: 16px;
+    line-height: 1.25;
+    color: #6a6a6f;
+  }
+
+  .table th,
+  .table td {
+    padding: 16px 0;
+    font-size: 14px;
+    line-height: 1.29;
+  }
+}

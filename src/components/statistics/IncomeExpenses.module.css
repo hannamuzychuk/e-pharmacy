@@ -1,0 +1,174 @@
+.card {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-white);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 14px;
+  background: #e7f1ed;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-text);
+}
+
+.body {
+  padding: 14px 14px 20px;
+}
+
+.today {
+  margin: 0 0 14px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.29;
+  color: var(--color-text-muted);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding: 14px 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  align-items: flex-start;
+  gap: 28px;
+  min-width: 0;
+}
+
+.tag {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 23px;
+  border-radius: 40px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.description {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  max-width: 118px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.29;
+  color: var(--color-text);
+}
+
+.amount {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.29;
+  white-space: nowrap;
+}
+
+.income {
+  color: var(--color-primary);
+}
+
+.tag.income {
+  background: var(--color-primary-soft);
+}
+
+.expense {
+  color: #e85050;
+}
+
+.tag.expense {
+  background: rgba(232, 80, 80, 0.1);
+}
+
+.error {
+  color: var(--color-text);
+}
+
+.tag.error {
+  background: rgba(29, 30, 33, 0.1);
+}
+
+.amount.error {
+  text-decoration: line-through;
+}
+
+@media (min-width: 768px) {
+  .head {
+    height: 64px;
+    padding: 0 20px;
+  }
+
+  .title {
+    font-size: 18px;
+    line-height: 1.33;
+  }
+
+  .body {
+    padding: 20px;
+  }
+
+  .today {
+    margin-bottom: 20px;
+  }
+
+  .row {
+    gap: 16px;
+    padding: 20px 0;
+  }
+
+  .main {
+    align-items: center;
+    gap: 40px;
+  }
+
+  .tag {
+    height: 25px;
+  }
+
+  .description {
+    max-width: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 1440px) {
+  .card {
+    height: 100%;
+  }
+}
