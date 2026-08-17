@@ -1,7 +1,7 @@
-import type {
-  CustomerPurchase,
-  StatisticsData,
-} from "./types";
+import type { CustomerPurchase, StatisticsData } from "./types";
+import productImageA from "../../images/create-shop-mobile.jpg";
+import productImageB from "../../images/create-shop-tablet.jpg";
+import productImageC from "../../images/medicine-placeholder.png";
 
 export const mockStatistics: StatisticsData = {
   metrics: {
@@ -81,27 +81,66 @@ export const mockStatistics: StatisticsData = {
   ],
 };
 
+const catalog = {
+  vitaminC: {
+    name: "Vitamin C Medicine",
+    description: "Antioxidant Aid for Heart Health",
+    image: productImageA,
+    amount: 90,
+  },
+  stomach: {
+    name: "Stomach Medicine",
+    description: "Soothes Indigestion, Eases Stomach Pain",
+    image: productImageB,
+    amount: 32,
+  },
+  antibiotic: {
+    name: "Antibiotic",
+    description: "Prefabricated Metal",
+    image: productImageC,
+    amount: 748,
+  },
+  hydrochloride: {
+    name: "Hydrochloride",
+    description: "Framing (Wood)",
+    image: productImageA,
+    amount: 582,
+  },
+  prednisone: {
+    name: "Prednisone",
+    description: "Retail Sales of Other",
+    image: productImageB,
+    amount: 579,
+  },
+  octinoxate: {
+    name: "Octinoxate",
+    description: "Specialty Food Stores",
+    image: productImageC,
+    amount: 306,
+  },
+} as const;
+
 export const mockCustomerPurchases: Record<string, CustomerPurchase[]> = {
   "1": [
-    { id: "p1", productName: "Moringa", date: "12 Mar 2026", amount: 470 },
-    { id: "p2", productName: "Hydrochloride", date: "08 Mar 2026", amount: 582 },
-    { id: "p3", productName: "Prednisone", date: "02 Mar 2026", amount: 1838.66 },
+    { id: "p1", ...catalog.vitaminC },
+    { id: "p2", ...catalog.stomach },
+    { id: "p3", ...catalog.antibiotic },
   ],
   "2": [
-    { id: "p4", productName: "Occidentalis", date: "15 Mar 2026", amount: 239 },
-    { id: "p5", productName: "Octinoxate", date: "11 Mar 2026", amount: 306 },
-    { id: "p6", productName: "Alcohol", date: "04 Mar 2026", amount: 2222.04 },
+    { id: "p6", ...catalog.stomach },
+    { id: "p7", ...catalog.octinoxate },
+    { id: "p8", ...catalog.antibiotic },
   ],
   "3": [
-    { id: "p7", productName: "Helminthos", date: "16 Mar 2026", amount: 470 },
-    { id: "p8", productName: "Moringa", date: "09 Mar 2026", amount: 2526 },
+    { id: "p9", ...catalog.vitaminC },
+    { id: "p10", ...catalog.hydrochloride },
   ],
   "4": [
-    { id: "p9", productName: "Prednisone", date: "14 Mar 2026", amount: 579 },
-    { id: "p10", productName: "Octinoxate", date: "03 Mar 2026", amount: 641.66 },
+    { id: "p11", ...catalog.prednisone },
+    { id: "p12", ...catalog.octinoxate },
   ],
   "5": [
-    { id: "p11", productName: "Alcohol", date: "17 Mar 2026", amount: 748 },
-    { id: "p12", productName: "Hydrochloride", date: "06 Mar 2026", amount: 1142.66 },
+    { id: "p13", ...catalog.antibiotic },
+    { id: "p14", ...catalog.hydrochloride },
   ],
 };

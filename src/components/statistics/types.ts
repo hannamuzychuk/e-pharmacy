@@ -22,8 +22,9 @@ export type IncomeExpense = {
 
 export type CustomerPurchase = {
   id: string;
-  productName: string;
-  date: string;
+  name: string;
+  description: string;
+  image: string;
   amount: number;
 };
 

@@ -12,6 +12,10 @@ export function formatMoney(value: number) {
   return moneyFormatter.format(Math.abs(value));
 }
 
+export function formatTaka(value: number) {
+  return `৳ ${formatMoney(value)}`;
+}
+
 export function formatSignedMoney(value: number) {
   const formatted = formatMoney(value);
   if (value > 0) return `+${formatted}`;
