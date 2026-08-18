@@ -2,16 +2,15 @@ import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import {
+  updateProductRequest,
+  type Product,
+} from "../../services/productService";
+import { getApiErrorMessage } from "../../services/http";
 import shared from "../AddMedicineModal/AddMedicineModal.module.css";
 import styles from "./EditMedicineModal.module.css";
 
-export type EditMedicineProduct = {
-  id: string;
-  name: string;
-  price: string;
-  image: string;
-  description?: string;
-};
+export type EditMedicineProduct = Product;
 
 type EditMedicineFormValues = {
   name: string;
@@ -20,14 +19,21 @@ type EditMedicineFormValues = {
 };
 
 type EditMedicineModalProps = {
+  shopId: string;
   product: EditMedicineProduct;
   onClose: () => void;
+  onUpdated?: (product: Product) => void;
 };
 
 const defaultDescription =
   "Although it's typically considered safe, excessive consumption can lead to side effects. Therefore, it's recommended to consult a healthcare professional before using.";
 
-export function EditMedicineModal({ product, onClose }: EditMedicineModalProps) {
+export function EditMedicineModal({
+  shopId,
+  product,
+  onClose,
+  onUpdated,
+}: EditMedicineModalProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -43,7 +49,7 @@ export function EditMedicineModal({ product, onClose }: EditMedicineModalProps) 
     defaultValues: {
       name: product.name,
       price: product.price,
-      description: product.description ?? defaultDescription,
+      description: product.description || defaultDescription,
     },
   });
 
@@ -119,17 +125,21 @@ export function EditMedicineModal({ product, onClose }: EditMedicineModalProps) 
   const onSubmit = async (data: EditMedicineFormValues) => {
     try {
       setIsSubmitting(true);
-      const payload = { id: product.id, ...data, image: imageFile ?? product.image };
-      await new Promise((resolve) => setTimeout(resolve, 700));
-      if (!payload.name) {
-        throw new Error("Medicine name is required");
-      }
+      const result = await updateProductRequest(shopId, product.id, {
+        name: data.name,
+        price: data.price,
+        description: data.description,
+        category: product.category,
+        stock: product.stock,
+        suppliers: product.suppliers,
+        photo: imageFile,
+      });
       toast.success("Medicine updated successfully");
+      onUpdated?.(result.product);
       reset();
       onClose();
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Something went wrong";
+      const message = getApiErrorMessage(error);
       toast.error(message);
     } finally {
       setIsSubmitting(false);

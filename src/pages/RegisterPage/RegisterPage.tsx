@@ -180,6 +180,10 @@ export function RegisterPage() {
                     value: 6,
                     message: "Minimum 6 characters",
                   },
+                  pattern: {
+                    value: /[!@#$%^&*(),.?":{}|<>_\-+=]/,
+                    message: "Password must contain a special character",
+                  },
                 })}
                 onFocus={enableAutofill}
               />

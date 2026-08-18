@@ -43,10 +43,10 @@ export function LoginPage() {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       setIsSubmitting(true);
-      await loginRequest(data);
-      login();
+      const session = await loginRequest(data);
+      login(session);
       toast.success("Logged in successfully");
-      navigate("/shop");
+      navigate(session.user.shopId ? "/shop" : "/create-shop");
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Something went wrong";

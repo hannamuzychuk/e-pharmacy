@@ -179,6 +179,11 @@
   text-overflow: ellipsis;
 }
 
+.productName a {
+  color: inherit;
+  text-decoration: none;
+}
+
 .productSupplier {
   margin: 4px 0 0;
   overflow: hidden;

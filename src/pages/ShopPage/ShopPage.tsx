@@ -1,82 +1,67 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { AddMedicineModal } from "../../components/AddMedicineModal/AddMedicineModal";
 import { EditMedicineModal } from "../../components/EditMedicineModal/EditMedicineModal";
 import { DeleteMedicineModal } from "../../components/DeleteMedicineModal/DeleteMedicineModal";
+import { getShopRequest, type Shop } from "../../services/shopService";
+import {
+  formatProductPrice,
+  getProductsRequest,
+  type Product,
+} from "../../services/productService";
+import { getApiErrorMessage } from "../../services/http";
+import { useAuth } from "../../store/auth";
 import styles from "./ShopPage.module.css";
 import createShopMobile from "../../images/create-shop-mobile.jpg";
-import pillMobile from "../../images/mobile-white-round-pill.png";
-import pillTablet from "../../images/tablet-white-round-pill.png";
 
 type ShopTab = "drugStore" | "allMedicine";
 
-type Product = {
-  id: string;
-  name: string;
-  supplier: string;
-  price: string;
-  image: string;
-};
+function getProductImage(image: string | null | undefined) {
+  if (!image) {
+    return createShopMobile;
+  }
 
-const shopInfo = {
-  name: "Huel LLC",
-  owner: "Datha Harmon",
-  address: "Kretoria F45",
-  phone: "595-08-2102",
-};
-
-const initialProducts: Product[] = [
-  {
-    id: "1",
-    name: "Hydrochloride",
-    supplier: "Framing (Wood)",
-    price: "৳582",
-    image: createShopMobile,
-  },
-  {
-    id: "2",
-    name: "Occidentalis",
-    supplier: "Specialty Food Stores",
-    price: "৳239",
-    image: pillTablet,
-  },
-  {
-    id: "3",
-    name: "Octinoxate",
-    supplier: "Other",
-    price: "৳306",
-    image: pillMobile,
-  },
-  {
-    id: "4",
-    name: "Prednisone",
-    supplier: "Retail Sales of Other",
-    price: "৳579",
-    image: createShopMobile,
-  },
-  {
-    id: "5",
-    name: "Helminthos",
-    supplier: "Hardware",
-    price: "৳470",
-    image: pillTablet,
-  },
-  {
-    id: "6",
-    name: "Alcohol",
-    supplier: "Meat and Fish Markets",
-    price: "৳748",
-    image: pillMobile,
-  },
-];
+  return image;
+}
 
 export function ShopPage() {
   const navigate = useNavigate();
+  const { shopId } = useAuth();
+  const [shop, setShop] = useState<Shop | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<ShopTab>("drugStore");
-  const [products, setProducts] = useState(initialProducts);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [isAddMedicineOpen, setIsAddMedicineOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
+
+  useEffect(() => {
+    if (!shopId) {
+      navigate("/create-shop", { replace: true });
+      return;
+    }
+
+    const loadData = async () => {
+      try {
+        const [shopData, productsData] = await Promise.all([
+          getShopRequest(shopId),
+          getProductsRequest(shopId),
+        ]);
+        setShop(shopData);
+        setProducts(productsData.products);
+        setCategories(productsData.categories);
+      } catch (error) {
+        toast.error(getApiErrorMessage(error));
+        navigate("/create-shop", { replace: true });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void loadData();
+  }, [shopId, navigate]);
 
   const handleEditData = () => {
     navigate("/edit-shop");
@@ -94,6 +79,19 @@ export function ShopPage() {
     setDeletingProduct(product);
   };
 
+  const handleProductAdded = (product: Product) => {
+    setProducts((prev) => [product, ...prev]);
+    if (!categories.includes(product.category)) {
+      setCategories((prev) => [...prev, product.category].sort());
+    }
+  };
+
+  const handleProductUpdated = (product: Product) => {
+    setProducts((prev) =>
+      prev.map((item) => (item.id === product.id ? product : item)),
+    );
+  };
+
   const handleProductDeleted = (productId: string) => {
     setProducts((prev) => prev.filter((item) => item.id !== productId));
   };
@@ -101,12 +99,13 @@ export function ShopPage() {
   return (
     <div className={styles.page}>
       <div className={styles.top}>
-        <h1 className={styles.title}>{shopInfo.name}</h1>
+        <h1 className={styles.title}>{shop?.shopName ?? "Your shop"}</h1>
 
         <div className={styles.meta}>
           <div className={styles.info}>
             <p className={styles.owner}>
-              <span className={styles.ownerLabel}>Owner:</span> {shopInfo.owner}
+              <span className={styles.ownerLabel}>Owner:</span>{" "}
+              {shop?.ownerName ?? "—"}
             </p>
 
             <div className={styles.contacts}>
@@ -119,7 +118,13 @@ export function ShopPage() {
                 >
                   <use href="/icons.svg#icon-map-pin" />
                 </svg>
-                <span>{shopInfo.address}</span>
+                <span>
+                  {shop
+                    ? `${shop.streetAddress}, ${shop.city}`
+                    : isLoading
+                      ? "Loading..."
+                      : "—"}
+                </span>
               </div>
 
               <div className={styles.contactItem}>
@@ -131,7 +136,7 @@ export function ShopPage() {
                 >
                   <use href="/icons.svg#icon-phone" />
                 </svg>
-                <span>{shopInfo.phone}</span>
+                <span>{shop?.phone ?? "—"}</span>
               </div>
             </div>
           </div>
@@ -180,20 +185,28 @@ export function ShopPage() {
         <ul className={styles.productList}>
           {products.map((product) => (
             <li key={product.id} className={styles.product}>
-              <img
-                className={styles.productImage}
-                src={product.image}
-                alt={product.name}
-                width={335}
-                height={300}
-              />
+              <Link to={`/medicine/${product.id}`}>
+                <img
+                  className={styles.productImage}
+                  src={getProductImage(product.image)}
+                  alt={product.name}
+                  width={335}
+                  height={300}
+                />
+              </Link>
               <div className={styles.productCard}>
                 <div className={styles.productTop}>
                   <div className={styles.productText}>
-                    <h2 className={styles.productName}>{product.name}</h2>
+                    <h2 className={styles.productName}>
+                      <Link to={`/medicine/${product.id}`}>
+                        {product.name}
+                      </Link>
+                    </h2>
                     <p className={styles.productSupplier}>{product.supplier}</p>
                   </div>
-                  <p className={styles.productPrice}>{product.price}</p>
+                  <p className={styles.productPrice}>
+                    {formatProductPrice(product.price)}
+                  </p>
                 </div>
                 <div className={styles.productActions}>
                   <button
@@ -216,22 +229,33 @@ export function ShopPage() {
           ))}
         </ul>
       ) : (
-        <p className={styles.placeholder}>All medicine filters — coming soon</p>
+        <p className={styles.placeholder}>
+          {categories.length > 0
+            ? `Categories: ${categories.join(", ")}`
+            : "All medicine filters — coming soon"}
+        </p>
       )}
 
-      {isAddMedicineOpen ? (
-        <AddMedicineModal onClose={() => setIsAddMedicineOpen(false)} />
-      ) : null}
-
-      {editingProduct ? (
-        <EditMedicineModal
-          product={editingProduct}
-          onClose={() => setEditingProduct(null)}
+      {isAddMedicineOpen && shopId ? (
+        <AddMedicineModal
+          shopId={shopId}
+          onClose={() => setIsAddMedicineOpen(false)}
+          onAdded={handleProductAdded}
         />
       ) : null}
 
-      {deletingProduct ? (
+      {editingProduct && shopId ? (
+        <EditMedicineModal
+          shopId={shopId}
+          product={editingProduct}
+          onClose={() => setEditingProduct(null)}
+          onUpdated={handleProductUpdated}
+        />
+      ) : null}
+
+      {deletingProduct && shopId ? (
         <DeleteMedicineModal
+          shopId={shopId}
           product={deletingProduct}
           onClose={() => setDeletingProduct(null)}
           onDeleted={handleProductDeleted}

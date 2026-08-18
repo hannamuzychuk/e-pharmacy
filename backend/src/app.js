@@ -1,9 +1,11 @@
 const express = require("express");
+const path = require("path");
 const helmet = require("helmet");
 const cors = require("cors");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const userRoutes = require("./routes/userRoutes");
+const shopRoutes = require("./routes/shopRoutes");
 const errorHandler = require("./middlewares/errorHandler");
 const notFoundHandler = require("./middlewares/notFoundHandler");
 
@@ -19,12 +21,15 @@ app.use(
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+app.use("/api/shop", require("./routes/productRoutes"));
 
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
 app.use("/api/user", userRoutes);
+app.use("/api/shop", shopRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

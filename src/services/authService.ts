@@ -1,33 +1,67 @@
-type LoginPayload = {
+import { api, getApiErrorMessage } from "./http";
+
+export type LoginPayload = {
   email: string;
   password: string;
 };
 
-type RegisterPayload = {
+export type RegisterPayload = {
   name: string;
   email: string;
   phone: string;
   password: string;
 };
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+export type AuthUser = {
+  id: string;
+  name: string;
+  email: string;
+  role?: string;
+  shopId: string | null;
+};
+
+export type LoginResponse = {
+  message: string;
+  accessToken: string;
+  refreshToken: string;
+  user: AuthUser;
+};
 
 export async function loginRequest(payload: LoginPayload) {
-  await delay(700);
-
-  if (payload.email.toLowerCase() === "error@demo.com") {
-    throw new Error("Invalid credentials");
+  try {
+    const { data } = await api.post<LoginResponse>("/api/user/login", payload);
+    return data;
+  } catch (error) {
+    throw new Error(getApiErrorMessage(error));
   }
-
-  return { ok: true };
 }
 
 export async function registerRequest(payload: RegisterPayload) {
-  await delay(800);
-
-  if (payload.email.toLowerCase() === "taken@demo.com") {
-    throw new Error("Email already exists");
+  try {
+    const { data } = await api.post("/api/user/register", payload);
+    return data;
+  } catch (error) {
+    throw new Error(getApiErrorMessage(error));
   }
+}
 
-  return { ok: true };
+export async function logoutRequest() {
+  try {
+    await api.get("/api/user/logout");
+  } catch (error) {
+    throw new Error(getApiErrorMessage(error));
+  }
+}
+
+export async function getUserInfoRequest() {
+  try {
+    const { data } = await api.get<{
+      name: string;
+      email: string;
+      shopId: string | null;
+    }>("/api/user/user-info");
+    return data;
+  } catch (error) {
+    throw new Error(getApiErrorMessage(error));
+  }
 }

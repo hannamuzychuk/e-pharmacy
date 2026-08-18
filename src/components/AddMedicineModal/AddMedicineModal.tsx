@@ -2,6 +2,8 @@ import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { addProductRequest, type Product } from "../../services/productService";
+import { getApiErrorMessage } from "../../services/http";
 import styles from "./AddMedicineModal.module.css";
 import defaultPreview from "../../images/medicine-placeholder.png";
 import defaultPreview2x from "../../images/medicine-placeholder-2x.png";
@@ -13,10 +15,12 @@ type AddMedicineFormValues = {
 };
 
 type AddMedicineModalProps = {
+  shopId: string;
   onClose: () => void;
+  onAdded?: (product: Product) => void;
 };
 
-export function AddMedicineModal({ onClose }: AddMedicineModalProps) {
+export function AddMedicineModal({ shopId, onClose, onAdded }: AddMedicineModalProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -103,17 +107,16 @@ export function AddMedicineModal({ onClose }: AddMedicineModalProps) {
   const onSubmit = async (data: AddMedicineFormValues) => {
     try {
       setIsSubmitting(true);
-      const payload = { ...data, image: imageFile };
-      await new Promise((resolve) => setTimeout(resolve, 700));
-      if (!payload.name) {
-        throw new Error("Medicine name is required");
-      }
+      const result = await addProductRequest(shopId, {
+        ...data,
+        photo: imageFile,
+      });
       toast.success("Medicine added successfully");
+      onAdded?.(result.product);
       reset();
       onClose();
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Something went wrong";
+      const message = getApiErrorMessage(error);
       toast.error(message);
     } finally {
       setIsSubmitting(false);

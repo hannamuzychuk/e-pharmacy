@@ -6,6 +6,13 @@
   background: var(--color-bg);
 }
 
+.status {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.29;
+  color: var(--color-text-secondary);
+}
+
 @media (min-width: 768px) {
   .page {
     gap: 16px;

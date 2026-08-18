@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const HttpError = require("../utils/HttpError");
 const { createSessionTokens, verifyRefreshToken } = require("../utils/tokens");
+const { getShopIdByOwner } = require("../services/ensureShop");
 
 async function register(req, res) {
   const { name, email, phone, password } = req.body;
@@ -51,6 +52,8 @@ async function login(req, res) {
   user.refreshToken = tokens.refreshToken;
   await user.save();
 
+  const shopId = await getShopIdByOwner(user);
+
   res.status(200).json({
     message: "Login successful",
     accessToken: tokens.accessToken,
@@ -60,6 +63,7 @@ async function login(req, res) {
       name: user.name,
       email: user.email,
       role: user.role,
+      shopId,
     },
   });
 }
@@ -99,9 +103,12 @@ async function logout(req, res) {
 }
 
 async function getUserInfo(req, res) {
+  const shopId = await getShopIdByOwner(req.user);
+
   res.status(200).json({
     name: req.user.name,
     email: req.user.email,
+    shopId,
   });
 }
 

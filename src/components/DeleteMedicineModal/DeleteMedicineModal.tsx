@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { deleteProductRequest } from "../../services/productService";
+import { getApiErrorMessage } from "../../services/http";
 import styles from "./DeleteMedicineModal.module.css";
 
 export type DeleteMedicineProduct = {
@@ -10,12 +12,14 @@ export type DeleteMedicineProduct = {
 };
 
 type DeleteMedicineModalProps = {
+  shopId: string;
   product: DeleteMedicineProduct;
   onClose: () => void;
   onDeleted?: (productId: string) => void;
 };
 
 export function DeleteMedicineModal({
+  shopId,
   product,
   onClose,
   onDeleted,
@@ -43,13 +47,12 @@ export function DeleteMedicineModal({
   const handleConfirm = async () => {
     try {
       setIsSubmitting(true);
-      await new Promise((resolve) => setTimeout(resolve, 700));
+      await deleteProductRequest(shopId, product.id);
       toast.success("Medicine deleted successfully");
       onDeleted?.(product.id);
       onClose();
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Something went wrong";
+      const message = getApiErrorMessage(error);
       toast.error(message);
     } finally {
       setIsSubmitting(false);

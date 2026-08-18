@@ -1,8 +1,11 @@
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { getShopRequest, updateShopRequest } from "../../services/shopService";
+import { getApiErrorMessage } from "../../services/http";
+import { useAuth } from "../../store/auth";
 import styles from "../CreateShopPage/CreateShopPage.module.css";
 import createShopMobile from "../../images/create-shop-mobile.jpg";
 import createShopTablet from "../../images/create-shop-tablet.jpg";
@@ -19,14 +22,14 @@ type EditShopFormValues = {
   hasDelivery: "yes" | "no";
 };
 
-const mockShopData: EditShopFormValues = {
-  shopName: "Green Pharmacy",
-  ownerName: "Datha Harmon",
-  email: "vendor@gmail.com",
-  phone: "+380501112233",
-  streetAddress: "12 Oak Street",
-  city: "Kyiv",
-  zipCode: "01001",
+const emptyShopData: EditShopFormValues = {
+  shopName: "",
+  ownerName: "",
+  email: "",
+  phone: "",
+  streetAddress: "",
+  city: "",
+  zipCode: "",
   hasDelivery: "yes",
 };
 
@@ -36,16 +39,49 @@ const enableAutofill = (event: React.FocusEvent<HTMLInputElement>) => {
 
 export function EditShopPage() {
   const navigate = useNavigate();
+  const { shopId } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<EditShopFormValues>({
     mode: "onBlur",
-    defaultValues: mockShopData,
+    defaultValues: emptyShopData,
   });
+
+  useEffect(() => {
+    if (!shopId) {
+      navigate("/create-shop", { replace: true });
+      return;
+    }
+
+    const loadShop = async () => {
+      try {
+        const shop = await getShopRequest(shopId);
+        reset({
+          shopName: shop.shopName,
+          ownerName: shop.ownerName,
+          email: shop.email,
+          phone: shop.phone,
+          streetAddress: shop.streetAddress,
+          city: shop.city,
+          zipCode: shop.zipCode,
+          hasDelivery: shop.hasDelivery,
+        });
+      } catch (error) {
+        toast.error(getApiErrorMessage(error));
+        navigate("/shop", { replace: true });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void loadShop();
+  }, [shopId, navigate, reset]);
 
   const onInvalid = (formErrors: typeof errors) => {
     const messages = Object.values(formErrors)
@@ -63,10 +99,11 @@ export function EditShopPage() {
   const onSubmit = async (data: EditShopFormValues) => {
     try {
       setIsSubmitting(true);
-      await new Promise((resolve) => setTimeout(resolve, 700));
-      if (!data.shopName) {
-        throw new Error("Shop name is required");
+      if (!shopId) {
+        throw new Error("Shop not found");
       }
+
+      await updateShopRequest(shopId, data);
       toast.success("Shop data updated successfully");
       navigate("/shop");
     } catch (error) {
@@ -77,6 +114,14 @@ export function EditShopPage() {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className={styles.page}>
+        <p className={styles.subtitle}>Loading shop data...</p>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.page}>

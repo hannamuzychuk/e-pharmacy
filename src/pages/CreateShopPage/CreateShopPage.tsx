@@ -3,6 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { createShopRequest } from "../../services/shopService";
+import { getApiErrorMessage } from "../../services/http";
+import { useAuth } from "../../store/auth";
 import styles from "./CreateShopPage.module.css";
 import createShopMobile from "../../images/create-shop-mobile.jpg";
 import createShopTablet from "../../images/create-shop-tablet.jpg";
@@ -27,10 +30,17 @@ const enableAutofill = (event: React.FocusEvent<HTMLInputElement>) => {
 
 export function CreateShopPage() {
   const navigate = useNavigate();
+  const { setShopId, shopId } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState(defaultShopLogo);
+
+  useEffect(() => {
+    if (shopId) {
+      navigate("/shop", { replace: true });
+    }
+  }, [shopId, navigate]);
 
   const {
     register,
@@ -92,16 +102,12 @@ export function CreateShopPage() {
   const onSubmit = async (data: CreateShopFormValues) => {
     try {
       setIsSubmitting(true);
-      const payload = { ...data, logo: logoFile };
-      await new Promise((resolve) => setTimeout(resolve, 700));
-      if (!payload.shopName) {
-        throw new Error("Shop name is required");
-      }
+      const result = await createShopRequest({ ...data, logo: logoFile });
+      setShopId(result.shop.id);
       toast.success("Shop created successfully");
       navigate("/shop");
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Something went wrong";
+      const message = getApiErrorMessage(error);
       toast.error(message);
     } finally {
       setIsSubmitting(false);
