@@ -28,5 +28,21 @@
     "oxlint": "^1.75.0",
     "typescript": "~6.0.2",
     "vite": "^8.2.0"
-  }
+  },
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hannamuzychuk/e-pharmacy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hannamuzychuk/e-pharmacy/issues"
+  },
+  "homepage": "https://github.com/hannamuzychuk/e-pharmacy#readme",
+  "workspaces": [
+    "backend"
+  ]
 }
