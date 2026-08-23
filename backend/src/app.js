@@ -30,6 +30,7 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/user", userRoutes);
 app.use("/api/shop", shopRoutes);
+app.use("/api/statistics", require("./routes/statisticsRoutes"));
 
 app.use(notFoundHandler);
 app.use(errorHandler);

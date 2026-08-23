@@ -113,6 +113,7 @@ export function CustomerPurchasesModal({
                     alt={purchase.name}
                     width={80}
                     height={80}
+                    referrerPolicy="no-referrer"
                   />
                   <div className={styles.itemBody}>
                     <p className={styles.name}>{purchase.name}</p>

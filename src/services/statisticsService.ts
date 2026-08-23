@@ -1,23 +1,24 @@
-import { mockCustomerPurchases, mockStatistics } from "../components/statistics/mockStatistics";
+import { api, getApiErrorMessage } from "./http";
 import type { CustomerPurchase, StatisticsData } from "../components/statistics/types";
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 export async function fetchStatistics(): Promise<StatisticsData> {
-  await delay(500);
-  return mockStatistics;
+  try {
+    const { data } = await api.get<StatisticsData>("/api/statistics");
+    return data;
+  } catch (error) {
+    throw new Error(getApiErrorMessage(error));
+  }
 }
 
 export async function fetchCustomerPurchases(
   customerId: string,
 ): Promise<CustomerPurchase[]> {
-  await delay(600);
-
-  const purchases = mockCustomerPurchases[customerId];
-
-  if (!purchases) {
-    throw new Error("Customer purchases not found");
+  try {
+    const { data } = await api.get<CustomerPurchase[]>(
+      `/api/statistics/${customerId}/goods`,
+    );
+    return data;
+  } catch (error) {
+    throw new Error(getApiErrorMessage(error));
   }
-
-  return purchases;
 }
