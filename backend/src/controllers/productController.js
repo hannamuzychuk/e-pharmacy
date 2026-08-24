@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Product = require("../models/Product");
 const findProductByParam = require("../utils/findProduct");
+const HttpError = require("../utils/HttpError");
 
 function formatProduct(product) {
   return {
@@ -19,15 +20,43 @@ function formatProduct(product) {
   };
 }
 
+function dedupeCatalogProducts(products) {
+  const seen = new Set();
+
+  return products.filter((product) => {
+    if (!product.id) {
+      return false;
+    }
+
+    const key = String(product.id);
+    if (seen.has(key)) {
+      return false;
+    }
+
+    seen.add(key);
+    return true;
+  });
+}
+
 async function listProducts(req, res) {
-  const [products, categories] = await Promise.all([
+  const shopObjectId = req.shop._id;
+  const [allProducts, categories, suppliers] = await Promise.all([
     Product.find().sort({ createdAt: -1 }),
     Product.distinct("category"),
+    Product.distinct("suppliers"),
   ]);
 
+  const catalogProducts = dedupeCatalogProducts(allProducts);
+  const shopProducts = allProducts.filter(
+    (product) =>
+      product.shopId && product.shopId.toString() === shopObjectId.toString()
+  );
+
   res.status(200).json({
-    products: products.map(formatProduct),
-    categories: categories.sort(),
+    products: shopProducts.map(formatProduct),
+    catalog: catalogProducts.map(formatProduct),
+    categories: categories.filter(Boolean).sort(),
+    suppliers: suppliers.filter(Boolean).sort(),
   });
 }
 
@@ -88,6 +117,37 @@ async function updateProduct(req, res) {
   });
 }
 
+async function addCatalogToShop(req, res) {
+  const source = req.product;
+  const shopId = req.shop._id;
+
+  const existing = await Product.findOne({
+    shopId,
+    name: source.name,
+    suppliers: source.suppliers,
+  });
+
+  if (existing) {
+    throw new HttpError(409, "Product is already in your shop");
+  }
+
+  const product = await Product.create({
+    shopId,
+    name: source.name,
+    category: source.category,
+    stock: source.stock,
+    suppliers: source.suppliers,
+    price: source.price,
+    description: source.description || "",
+    photo: source.photo,
+  });
+
+  res.status(201).json({
+    message: "Product added to shop successfully",
+    product: formatProduct(product),
+  });
+}
+
 async function deleteProduct(req, res) {
   await Product.deleteOne({ _id: req.product._id });
 
@@ -108,6 +168,7 @@ async function loadProduct(req, res, next) {
 module.exports = {
   listProducts,
   addProduct,
+  addCatalogToShop,
   getProduct,
   updateProduct,
   deleteProduct,

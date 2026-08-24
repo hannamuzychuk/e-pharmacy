@@ -9,6 +9,8 @@ export const mockStatistics: StatisticsData = {
     suppliers: 211,
     customers: 140,
   },
+  products: [],
+  suppliers: [],
   recentCustomers: [
     {
       id: "1",

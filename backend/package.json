@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "seed:customer-goods": "node scripts/seedCustomerGoods.js",
+    "seed:customer-goods:force": "node scripts/seedCustomerGoods.js --force",
+    "seed:shop-products": "node scripts/seedShopProducts.js"
   },
   "keywords": [],
   "author": "",

@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { AddMedicineModal } from "../../components/AddMedicineModal/AddMedicineModal";
 import { EditMedicineModal } from "../../components/EditMedicineModal/EditMedicineModal";
 import { DeleteMedicineModal } from "../../components/DeleteMedicineModal/DeleteMedicineModal";
+import { AllMedicineTab } from "../../components/shop/AllMedicineTab";
 import { getShopRequest, type Shop } from "../../services/shopService";
 import {
   formatProductPrice,
@@ -32,7 +33,9 @@ export function ShopPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<ShopTab>("drugStore");
   const [products, setProducts] = useState<Product[]>([]);
+  const [catalog, setCatalog] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
+  const [suppliers, setSuppliers] = useState<string[]>([]);
   const [isAddMedicineOpen, setIsAddMedicineOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
@@ -51,7 +54,9 @@ export function ShopPage() {
         ]);
         setShop(shopData);
         setProducts(productsData.products);
+        setCatalog(productsData.catalog);
         setCategories(productsData.categories);
+        setSuppliers(productsData.suppliers);
       } catch (error) {
         toast.error(getApiErrorMessage(error));
         navigate("/create-shop", { replace: true });
@@ -95,6 +100,11 @@ export function ShopPage() {
   const handleProductDeleted = (productId: string) => {
     setProducts((prev) => prev.filter((item) => item.id !== productId));
   };
+
+  const shopProductKeys = useMemo(
+    () => new Set(products.map((product) => `${product.name}|${product.supplier}`)),
+    [products],
+  );
 
   return (
     <div className={styles.page}>
@@ -192,6 +202,7 @@ export function ShopPage() {
                   alt={product.name}
                   width={335}
                   height={300}
+                  referrerPolicy="no-referrer"
                 />
               </Link>
               <div className={styles.productCard}>
@@ -228,13 +239,16 @@ export function ShopPage() {
             </li>
           ))}
         </ul>
-      ) : (
-        <p className={styles.placeholder}>
-          {categories.length > 0
-            ? `Categories: ${categories.join(", ")}`
-            : "All medicine filters — coming soon"}
-        </p>
-      )}
+      ) : shopId ? (
+        <AllMedicineTab
+          shopId={shopId}
+          catalog={catalog}
+          categories={categories}
+          suppliers={suppliers}
+          shopProductKeys={shopProductKeys}
+          onAdded={handleProductAdded}
+        />
+      ) : null}
 
       {isAddMedicineOpen && shopId ? (
         <AddMedicineModal

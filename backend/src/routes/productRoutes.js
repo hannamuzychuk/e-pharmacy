@@ -2,6 +2,7 @@ const express = require("express");
 const {
   listProducts,
   addProduct,
+  addCatalogToShop,
   getProduct,
   updateProduct,
   deleteProduct,
@@ -33,6 +34,14 @@ router.post(
   uploadProductPhoto,
   validateBody(addProductSchema),
   ctrlWrapper(addProduct)
+);
+
+router.post(
+  "/:shopId/product/:productId/add-to-shop",
+  authenticate,
+  isShopOwner,
+  ctrlWrapper(loadProduct),
+  ctrlWrapper(addCatalogToShop)
 );
 
 router.get(

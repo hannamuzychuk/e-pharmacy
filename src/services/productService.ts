@@ -14,7 +14,9 @@ export type Product = {
 
 export type ProductsResponse = {
   products: Product[];
+  catalog: Product[];
   categories: string[];
+  suppliers: string[];
 };
 
 export type AddProductPayload = {
@@ -139,6 +141,20 @@ export async function deleteProductRequest(shopId: string, productId: string) {
   try {
     const { data } = await api.delete<{ message: string }>(
       `/api/shop/${shopId}/product/${productId}/delete`,
+    );
+    return data;
+  } catch (error) {
+    throw new Error(getApiErrorMessage(error));
+  }
+}
+
+export async function addCatalogToShopRequest(
+  shopId: string,
+  productId: string,
+) {
+  try {
+    const { data } = await api.post<{ message: string; product: Product }>(
+      `/api/shop/${shopId}/product/${productId}/add-to-shop`,
     );
     return data;
   } catch (error) {

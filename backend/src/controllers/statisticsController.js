@@ -29,6 +29,29 @@ function dedupeIncomeExpenses(items) {
   });
 }
 
+function formatProduct(product) {
+  return {
+    id: product._id.toString(),
+    name: product.name,
+    category: product.category,
+    supplier: product.suppliers,
+    price: parseAmount(product.price),
+    stock: product.stock,
+    image: product.photo || "",
+  };
+}
+
+function formatSupplier(supplier) {
+  return {
+    id: supplier._id.toString(),
+    name: supplier.name,
+    company: supplier.suppliers,
+    address: supplier.address,
+    amount: parseAmount(supplier.amount),
+    status: supplier.status,
+  };
+}
+
 function formatPurchase(product) {
   return {
     id: product._id.toString(),
@@ -41,32 +64,37 @@ function formatPurchase(product) {
   };
 }
 
-function pickCustomerPurchases(products, customerId) {
-  if (products.length === 0) {
-    return [];
+function normalizeProductId(id) {
+  if (id == null || id === "") {
+    return null;
   }
 
-  let hash = 0;
-  for (let i = 0; i < customerId.length; i += 1) {
-    hash = (hash + customerId.charCodeAt(i)) % products.length;
+  const normalized = String(id).trim().replace(/^0+/, "");
+  return normalized || "0";
+}
+
+function buildProductLookup(products) {
+  const lookup = new Map();
+
+  for (const product of products) {
+    if (product.id == null) {
+      continue;
+    }
+
+    lookup.set(String(product.id), product);
+    lookup.set(normalizeProductId(product.id), product);
   }
 
-  const count = Math.min(2 + (hash % 2), products.length);
-  const purchases = [];
-
-  for (let i = 0; i < count; i += 1) {
-    purchases.push(formatPurchase(products[(hash + i) % products.length]));
-  }
-
-  return purchases;
+  return lookup;
 }
 
 async function getStatistics(req, res) {
   const db = mongoose.connection.db;
-  const [products, customers, incomeExpensesRaw] = await Promise.all([
+  const [products, customers, incomeExpensesRaw, suppliersRaw] = await Promise.all([
     Product.find({ id: { $exists: true, $ne: null } }).sort({ id: 1 }),
     db.collection("customers").find().toArray(),
     db.collection("Income-Expenses").find().sort({ _id: 1 }).toArray(),
+    db.collection("suppliers").find().sort({ _id: 1 }).toArray(),
   ]);
 
   const uniqueProducts = dedupeProducts(products);
@@ -97,6 +125,8 @@ async function getStatistics(req, res) {
       suppliers: supplierNames.size,
       customers: customers.length,
     },
+    products: uniqueProducts.map(formatProduct),
+    suppliers: suppliersRaw.map(formatSupplier),
     recentCustomers,
     incomeExpenses,
   });
@@ -118,11 +148,51 @@ async function getCustomerGoods(req, res) {
     throw new HttpError(404, "Customer not found");
   }
 
-  const products = dedupeProducts(
-    await Product.find({ id: { $exists: true, $ne: null } }).sort({ id: 1 })
-  );
+  const customerObjectId = new mongoose.Types.ObjectId(clientId);
+  const goods = await db
+    .collection("customer_goods")
+    .find({ customerId: customerObjectId })
+    .toArray();
 
-  res.status(200).json(pickCustomerPurchases(products, clientId));
+  let productIds = goods.map((item) => item.productId);
+
+  if (productIds.length === 0) {
+    const customerPhoto = customer.photo || customer.image;
+
+    if (customerPhoto) {
+      const orders = await db
+        .collection("orders")
+        .find({ photo: customerPhoto })
+        .sort({ order_date: -1 })
+        .toArray();
+      productIds = orders.map((order) => order.products).filter(Boolean);
+    }
+  }
+
+  if (productIds.length === 0) {
+    res.status(200).json([]);
+    return;
+  }
+
+  const products = dedupeProducts(
+    await Product.find({
+      id: { $in: productIds.map((id) => String(id)) },
+    }).sort({ id: 1 })
+  );
+  const productLookup = buildProductLookup(products);
+  const purchases = [];
+
+  for (const productId of productIds) {
+    const product =
+      productLookup.get(String(productId)) ||
+      productLookup.get(normalizeProductId(productId));
+
+    if (product) {
+      purchases.push(formatPurchase(product));
+    }
+  }
+
+  res.status(200).json(purchases);
 }
 
 module.exports = {

@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { KeyIndicators } from "../../components/statistics/KeyIndicators";
+import { AllProducts } from "../../components/statistics/AllProducts";
+import { AllSuppliers } from "../../components/statistics/AllSuppliers";
 import { RecentCustomers } from "../../components/statistics/RecentCustomers";
 import { IncomeExpenses } from "../../components/statistics/IncomeExpenses";
 import { CustomerPurchasesModal } from "../../components/CustomerPurchasesModal/CustomerPurchasesModal";
@@ -12,12 +14,14 @@ import type {
   CustomerPurchase,
   RecentCustomer,
   StatisticsData,
+  StatisticsPanelKey,
 } from "../../components/statistics/types";
 import styles from "./StatisticsPage.module.css";
 
 export function StatisticsPage() {
   const [data, setData] = useState<StatisticsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [activePanel, setActivePanel] = useState<StatisticsPanelKey>("products");
   const [selectedCustomer, setSelectedCustomer] =
     useState<RecentCustomer | null>(null);
   const [purchases, setPurchases] = useState<CustomerPurchase[] | null>(null);
@@ -88,13 +92,25 @@ export function StatisticsPage() {
         <p className={styles.status}>Could not load statistics.</p>
       ) : (
         <div className={styles.content}>
-          <KeyIndicators metrics={data.metrics} />
+          <KeyIndicators
+            metrics={data.metrics}
+            activeKey={activePanel}
+            onActiveKeyChange={setActivePanel}
+          />
           <div className={styles.panels}>
-            <RecentCustomers
-              customers={data.recentCustomers}
-              loadingId={loadingId}
-              onView={handleView}
-            />
+            {activePanel === "products" && (
+              <AllProducts products={data.products} />
+            )}
+            {activePanel === "suppliers" && (
+              <AllSuppliers suppliers={data.suppliers} />
+            )}
+            {activePanel === "customers" && (
+              <RecentCustomers
+                customers={data.recentCustomers}
+                loadingId={loadingId}
+                onView={handleView}
+              />
+            )}
             <IncomeExpenses items={data.incomeExpenses} />
           </div>
         </div>

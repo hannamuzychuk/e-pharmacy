@@ -4,6 +4,8 @@ export type StatisticsMetrics = {
   customers: number;
 };
 
+export type StatisticsPanelKey = keyof StatisticsMetrics;
+
 export type RecentCustomer = {
   id: string;
   name: string;
@@ -28,8 +30,29 @@ export type CustomerPurchase = {
   amount: number;
 };
 
+export type StatisticsProduct = {
+  id: string;
+  name: string;
+  category: string;
+  supplier: string;
+  price: number;
+  stock: string;
+  image: string;
+};
+
+export type StatisticsSupplier = {
+  id: string;
+  name: string;
+  company: string;
+  address: string;
+  amount: number;
+  status: string;
+};
+
 export type StatisticsData = {
   metrics: StatisticsMetrics;
+  products: StatisticsProduct[];
+  suppliers: StatisticsSupplier[];
   recentCustomers: RecentCustomer[];
   incomeExpenses: IncomeExpense[];
 };

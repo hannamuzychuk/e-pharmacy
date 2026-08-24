@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Shop = require("../models/Shop");
+const { seedShopCatalog } = require("./seedShopCatalog");
 
 async function pickPharmacy(index) {
   const pharmacies = mongoose.connection.collection("pharmacies");
@@ -23,7 +24,7 @@ async function ensureShopForUser(user) {
     return null;
   }
 
-  return Shop.create({
+  const shop = await Shop.create({
     ownerId: user._id,
     shopName: pharmacy.name,
     ownerName: user.name,
@@ -35,6 +36,10 @@ async function ensureShopForUser(user) {
     hasDelivery: true,
     logoUrl: null,
   });
+
+  await seedShopCatalog(shop._id);
+
+  return shop;
 }
 
 async function getShopIdByOwner(user) {

@@ -219,12 +219,6 @@
   border-radius: 24px;
 }
 
-.placeholder {
-  margin: 40px 0 0;
-  font-size: 14px;
-  color: var(--color-text-nav);
-}
-
 @media (min-width: 768px) {
   .page {
     padding: 80px 32px 120px;

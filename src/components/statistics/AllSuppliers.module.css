@@ -1,0 +1,190 @@
+.section {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.scroll {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  padding-bottom: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: #e6e6e6 #f1f1f1;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 14px;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  background: #e6e6e6;
+  border-radius: 14px;
+}
+
+.card {
+  box-sizing: border-box;
+  width: 520px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-white);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 14px;
+  background: #e7f1ed;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-text);
+}
+
+.table {
+  width: 520px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.colName {
+  width: 110px;
+}
+
+.colCompany {
+  width: 90px;
+}
+
+.colAddress {
+  width: 130px;
+}
+
+.colAmount {
+  width: 100px;
+}
+
+.colStatus {
+  width: 90px;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.17;
+  white-space: nowrap;
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table th {
+  height: 42px;
+  padding: 0 14px;
+  color: var(--color-text-muted);
+}
+
+.table td {
+  height: 74px;
+  padding: 0 14px;
+  color: var(--color-text);
+  border-top: 1px solid var(--color-border);
+}
+
+.table td:nth-child(4) {
+  font-weight: 600;
+}
+
+.status {
+  color: var(--color-primary);
+}
+
+@media (min-width: 768px) {
+  .scroll {
+    overflow: hidden;
+    padding-bottom: 0;
+    scrollbar-width: none;
+  }
+
+  .scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .card,
+  .table {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .head {
+    height: 64px;
+    padding: 0 20px;
+  }
+
+  .title {
+    font-size: 18px;
+    line-height: 1.33;
+  }
+
+  .colName {
+    width: 22%;
+  }
+
+  .colCompany {
+    width: 18%;
+  }
+
+  .colAddress {
+    width: 26%;
+  }
+
+  .colAmount {
+    width: 18%;
+  }
+
+  .colStatus {
+    width: 16%;
+  }
+
+  .table th,
+  .table td {
+    padding: 0 20px;
+    font-size: 14px;
+    line-height: 1.29;
+  }
+
+  .table th {
+    height: 58px;
+  }
+
+  .table td {
+    height: 76px;
+  }
+
+  .table th:not(:first-child),
+  .table td:not(:first-child) {
+    border-left: 1px solid var(--color-border);
+  }
+}
+
+@media (min-width: 1440px) {
+  .section,
+  .scroll,
+  .card {
+    height: 100%;
+  }
+}
