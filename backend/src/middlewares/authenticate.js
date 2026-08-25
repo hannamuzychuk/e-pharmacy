@@ -1,5 +1,6 @@
 const HttpError = require("../utils/HttpError");
 const { verifyAccessToken } = require("../utils/tokens");
+const { isTokenBlacklisted } = require("../services/tokenBlacklist");
 const User = require("../models/User");
 
 async function authenticate(req, res, next) {
@@ -19,12 +20,17 @@ async function authenticate(req, res, next) {
       throw new HttpError(401, "Not authorized");
     }
 
+    if (await isTokenBlacklisted(payload.jti)) {
+      throw new HttpError(401, "Not authorized");
+    }
+
     const user = await User.findById(payload.id);
     if (!user) {
       throw new HttpError(401, "Not authorized");
     }
 
     req.user = user;
+    req.accessTokenPayload = payload;
     next();
   } catch (error) {
     next(error);

@@ -2,6 +2,10 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const HttpError = require("../utils/HttpError");
 const { createSessionTokens, verifyRefreshToken } = require("../utils/tokens");
+const {
+  blacklistTokenPayload,
+  isTokenBlacklisted,
+} = require("../services/tokenBlacklist");
 const { getShopIdByOwner } = require("../services/ensureShop");
 
 async function register(req, res) {
@@ -78,6 +82,10 @@ async function refresh(req, res) {
     throw new HttpError(401, "Not authorized");
   }
 
+  if (await isTokenBlacklisted(payload.jti)) {
+    throw new HttpError(401, "Not authorized");
+  }
+
   const user = await User.findById(payload.id);
   if (!user || user.refreshToken !== refreshToken) {
     throw new HttpError(401, "Not authorized");
@@ -94,6 +102,15 @@ async function refresh(req, res) {
 }
 
 async function logout(req, res) {
+  await blacklistTokenPayload(req.accessTokenPayload);
+
+  if (req.user.refreshToken) {
+    try {
+      const refreshPayload = verifyRefreshToken(req.user.refreshToken);
+      await blacklistTokenPayload(refreshPayload);
+    } catch {}
+  }
+
   req.user.refreshToken = null;
   await req.user.save();
 

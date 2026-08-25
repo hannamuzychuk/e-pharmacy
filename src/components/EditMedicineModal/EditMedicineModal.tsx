@@ -7,6 +7,7 @@ import {
   type Product,
 } from "../../services/productService";
 import { getApiErrorMessage } from "../../services/http";
+import { getProductImageUrl } from "../../utils/productImage";
 import shared from "../AddMedicineModal/AddMedicineModal.module.css";
 import styles from "./EditMedicineModal.module.css";
 
@@ -37,7 +38,7 @@ export function EditMedicineModal({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState(product.image);
+  const [imagePreview, setImagePreview] = useState(getProductImageUrl(product.image));
 
   const {
     register,

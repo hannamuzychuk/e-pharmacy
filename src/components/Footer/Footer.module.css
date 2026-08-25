@@ -70,12 +70,6 @@
   color: #f7f8fa;
 }
 
-.aside {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-}
-
 .nav {
   display: flex;
   flex-wrap: wrap;
@@ -245,14 +239,14 @@
   }
 
   .top {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: minmax(0, 311px) 1fr auto;
+    align-items: start;
     gap: 24px;
   }
 
   .brand {
-    max-width: 261px;
+    max-width: 311px;
     gap: 20px;
   }
 
@@ -266,14 +260,11 @@
     height: 44px;
   }
 
-  .aside {
-    align-items: flex-end;
-    gap: 32px;
-    padding-top: 9px;
-  }
-
   .nav {
-    gap: 32px;
+    justify-self: center;
+    justify-content: center;
+    gap: 50px;
+    padding-top: 9px;
   }
 
   .navLink {
@@ -283,10 +274,12 @@
 
   .socials {
     display: flex;
+    justify-self: end;
+    padding-top: 9px;
   }
 
   .divider {
-    margin: 88px 0 32px;
+    margin: 64px 0 40px;
   }
 
   .bottom {
@@ -313,21 +306,5 @@
 @media (min-width: 1440px) {
   .inner {
     padding: 40px 128px 40px;
-  }
-
-  .brand {
-    max-width: 311px;
-  }
-
-  .aside {
-    gap: 32px;
-  }
-
-  .nav {
-    gap: 50px;
-  }
-
-  .divider {
-    margin: 64px 0 40px;
   }
 }

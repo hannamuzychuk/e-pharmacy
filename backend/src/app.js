@@ -22,6 +22,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+app.use("/api/image", require("./routes/imageRoutes"));
 app.use("/api/shop", require("./routes/productRoutes"));
 
 app.get("/api/health", (req, res) => {

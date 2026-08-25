@@ -17,8 +17,8 @@ import {
 } from "../../services/productService";
 import { getApiErrorMessage } from "../../services/http";
 import { useAuth } from "../../store/auth";
+import { getProductImageUrl } from "../../utils/productImage";
 import styles from "./MedicinePage.module.css";
-import createShopMobile from "../../images/create-shop-mobile.jpg";
 
 function toMedicine(
   product: Product,
@@ -33,12 +33,12 @@ function toMedicine(
     name: product.name,
     supplier: product.supplier,
     price: formatProductPrice(product.price),
-    image: product.image || createShopMobile,
+    image: getProductImageUrl(product.image),
     description: [{ text: descriptionText }],
     reviews: reviews.map((review) => ({
       id: review.id,
       author: review.author,
-      date: review.date || "Recently",
+      date: review.date,
       text: review.text,
     })),
   };

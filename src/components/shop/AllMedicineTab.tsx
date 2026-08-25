@@ -8,7 +8,7 @@ import {
 } from "../../services/productService";
 import styles from "./AllMedicineTab.module.css";
 import { FilterSelect } from "./FilterSelect";
-import createShopMobile from "../../images/create-shop-mobile.jpg";
+import { getProductImageUrl } from "../../utils/productImage";
 
 const MOBILE_PAGE_SIZE = 6;
 const DESKTOP_PAGE_SIZE = 8;
@@ -48,14 +48,6 @@ type AllMedicineTabProps = {
   shopProductKeys: Set<string>;
   onAdded: (product: Product) => void;
 };
-
-function getProductImage(image: string | null | undefined) {
-  if (!image) {
-    return createShopMobile;
-  }
-
-  return image;
-}
 
 function getPageItems(current: number, total: number): Array<number | "ellipsis"> {
   if (total <= 4) {
@@ -232,11 +224,10 @@ export function AllMedicineTab({
                   <Link to={`/medicine/${product.id}`}>
                     <img
                       className={styles.productImage}
-                      src={getProductImage(product.image)}
+                      src={getProductImageUrl(product.image)}
                       alt={product.name}
                       width={335}
                       height={300}
-                      referrerPolicy="no-referrer"
                     />
                   </Link>
                   <div className={styles.productCard}>

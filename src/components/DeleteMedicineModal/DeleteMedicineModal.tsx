@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { deleteProductRequest } from "../../services/productService";
 import { getApiErrorMessage } from "../../services/http";
+import { getProductImageUrl } from "../../utils/productImage";
 import styles from "./DeleteMedicineModal.module.css";
 
 export type DeleteMedicineProduct = {
@@ -95,7 +96,7 @@ export function DeleteMedicineModal({
           <div className={styles.previewFrame}>
             <img
               className={styles.preview}
-              src={product.image}
+              src={getProductImageUrl(product.image)}
               alt={product.name}
               width={130}
               height={130}

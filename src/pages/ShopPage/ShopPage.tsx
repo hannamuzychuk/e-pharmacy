@@ -13,18 +13,10 @@ import {
 } from "../../services/productService";
 import { getApiErrorMessage } from "../../services/http";
 import { useAuth } from "../../store/auth";
+import { getProductImageUrl } from "../../utils/productImage";
 import styles from "./ShopPage.module.css";
-import createShopMobile from "../../images/create-shop-mobile.jpg";
 
 type ShopTab = "drugStore" | "allMedicine";
-
-function getProductImage(image: string | null | undefined) {
-  if (!image) {
-    return createShopMobile;
-  }
-
-  return image;
-}
 
 export function ShopPage() {
   const navigate = useNavigate();
@@ -198,11 +190,10 @@ export function ShopPage() {
               <Link to={`/medicine/${product.id}`}>
                 <img
                   className={styles.productImage}
-                  src={getProductImage(product.image)}
+                  src={getProductImageUrl(product.image)}
                   alt={product.name}
                   width={335}
                   height={300}
-                  referrerPolicy="no-referrer"
                 />
               </Link>
               <div className={styles.productCard}>

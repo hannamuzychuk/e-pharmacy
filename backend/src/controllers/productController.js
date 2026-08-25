@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Product = require("../models/Product");
 const findProductByParam = require("../utils/findProduct");
+const { getReviewDisplayDate } = require("../utils/formatReviewDate");
 const HttpError = require("../utils/HttpError");
 
 function formatProduct(product) {
@@ -86,10 +87,10 @@ async function getProduct(req, res) {
 
   res.status(200).json({
     product: formatProduct(req.product),
-    reviews: reviews.map((review) => ({
+    reviews: reviews.map((review, index) => ({
       id: review._id.toString(),
       author: review.name,
-      date: review.date || "",
+      date: getReviewDisplayDate(index),
       text: review.testimonial,
     })),
   });

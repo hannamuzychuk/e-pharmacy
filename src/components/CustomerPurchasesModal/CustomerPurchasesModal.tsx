@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styles from "./CustomerPurchasesModal.module.css";
 import type { CustomerPurchase, RecentCustomer } from "../statistics/types";
 import { formatMoney, formatTaka } from "../statistics/format";
+import { getProductImageUrl } from "../../utils/productImage";
 
 type CustomerPurchasesModalProps = {
   customer: RecentCustomer;
@@ -109,11 +110,10 @@ export function CustomerPurchasesModal({
                 >
                   <img
                     className={styles.image}
-                    src={purchase.image}
+                    src={getProductImageUrl(purchase.image)}
                     alt={purchase.name}
                     width={80}
                     height={80}
-                    referrerPolicy="no-referrer"
                   />
                   <div className={styles.itemBody}>
                     <p className={styles.name}>{purchase.name}</p>

@@ -54,21 +54,20 @@ export function Footer() {
             </Link>
 
             <p className={styles.tagline}>
-              Get the medicine to help you feel better, get back to your active
-              life, and enjoy every moment.
+              Created a drug franchise that embodies effective formulas and
+              changes the approach to treatment.
             </p>
           </div>
 
-          <div className={styles.aside}>
-            <nav className={styles.nav} aria-label="Footer">
-              {navItems.map((item) => (
-                <Link key={item.to} className={styles.navLink} to={item.to}>
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+          <nav className={styles.nav} aria-label="Footer">
+            {navItems.map((item) => (
+              <Link key={item.to} className={styles.navLink} to={item.to}>
+                {item.label}
+              </Link>
+            ))}
+          </nav>
 
-            <ul className={styles.socials}>
+          <ul className={styles.socials}>
               {socials.map((social) => (
                 <li key={social.name}>
                   <a
@@ -88,15 +87,14 @@ export function Footer() {
                   </a>
                 </li>
               ))}
-            </ul>
-          </div>
+          </ul>
         </div>
 
         <div className={styles.divider} />
 
         <div className={styles.bottom}>
           <p className={styles.copyright}>
-            © E-Pharmacy 1488. All Rights Reserved
+            © E-Pharmacy 2023. All Rights Reserved
           </p>
           <span className={styles.sep} aria-hidden="true" />
           <a className={styles.legalLink} href="#">
