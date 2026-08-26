@@ -61,8 +61,8 @@
 .main {
   display: flex;
   flex: 1;
-  align-items: flex-start;
-  gap: 28px;
+  align-items: center;
+  gap: 20px;
   min-width: 0;
 }
 
@@ -83,11 +83,14 @@
   margin: 0;
   flex: 1;
   min-width: 0;
-  max-width: 118px;
   font-size: 14px;
   font-weight: 400;
   line-height: 1.29;
   color: var(--color-text);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 .amount {
@@ -122,10 +125,6 @@
   background: rgba(29, 30, 33, 0.1);
 }
 
-.amount.error {
-  text-decoration: line-through;
-}
-
 @media (min-width: 768px) {
   .head {
     height: 64px;
@@ -151,19 +150,11 @@
   }
 
   .main {
-    align-items: center;
     gap: 40px;
   }
 
   .tag {
     height: 25px;
-  }
-
-  .description {
-    max-width: none;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 }
 

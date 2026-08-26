@@ -25,15 +25,32 @@
 
   --input-height: 44px;
   --btn-height: 44px;
-  --container-padding: 20px;
+  --bp-mobile: 320px;
+  --bp-mobile-adaptive: 375px;
+  --bp-tablet: 768px;
+  --bp-desktop: 1440px;
+
+  --container-padding: 16px;
+  --content-max-width: 100%;
 
   --font-family: "Inter", sans-serif;
+}
+
+@media (min-width: 375px) {
+  :root {
+    --container-padding: 20px;
+    --content-max-width: 335px;
+  }
 }
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
 }
 
 html,
@@ -44,6 +61,7 @@ body,
 
 body {
   margin: 0;
+  min-width: 320px;
   font-family: var(--font-family);
   font-size: 16px;
   line-height: 1.4;

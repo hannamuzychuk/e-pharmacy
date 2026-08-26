@@ -42,7 +42,7 @@
   display: flex;
   align-items: center;
   height: 48px;
-  padding: 0 14px;
+  padding: 0 20px;
   background: #e7f1ed;
 }
 
@@ -78,37 +78,45 @@
 
 .table th,
 .table td {
+  box-sizing: border-box;
   text-align: left;
   font-size: 12px;
-  font-weight: 500;
-  line-height: 1.17;
+  line-height: 1.2;
   white-space: nowrap;
   vertical-align: middle;
   overflow: hidden;
   text-overflow: ellipsis;
+  border-top: 1px solid var(--color-border);
+}
+
+.table th:not(:first-child),
+.table td:not(:first-child) {
+  border-left: 1px solid var(--color-border);
 }
 
 .table th {
   height: 42px;
   padding: 0 14px;
+  font-weight: 500;
   color: var(--color-text-muted);
+  background: var(--color-white);
 }
 
 .table td {
   height: 74px;
   padding: 0 14px;
+  font-weight: 400;
   color: var(--color-text);
-  border-top: 1px solid var(--color-border);
 }
 
+.table td:first-child,
 .table td:nth-child(3) {
   font-weight: 600;
 }
 
 .table th:last-child,
 .table td:last-child {
-  text-align: right;
-  padding-right: 14px;
+  text-align: center;
 }
 
 .viewBtn {
@@ -116,12 +124,12 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: 57px;
-  height: 26px;
-  padding: 0;
+  min-width: 57px;
+  height: 28px;
+  padding: 0 14px;
   border: 1px solid rgba(89, 177, 122, 0.5);
   border-radius: 30px;
-  background: transparent;
+  background: var(--color-white);
   font-family: inherit;
   font-size: 12px;
   font-weight: 400;
@@ -155,18 +163,6 @@
   outline-offset: 2px;
 }
 
-.actionHead {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
 @media (min-width: 768px) {
   .scroll {
     overflow: hidden;
@@ -186,7 +182,6 @@
 
   .head {
     height: 64px;
-    padding: 0 20px;
   }
 
   .title {
@@ -195,11 +190,11 @@
   }
 
   .colName {
-    width: 30%;
+    width: 28%;
   }
 
   .colEmail {
-    width: 32%;
+    width: 34%;
   }
 
   .colSpent {
@@ -212,44 +207,25 @@
 
   .table th,
   .table td {
-    padding: 0 20px;
+    padding: 0 16px;
     font-size: 14px;
     line-height: 1.29;
   }
 
   .table th {
-    height: 58px;
+    height: 56px;
   }
 
   .table td {
     height: 76px;
   }
 
-  .table th:last-child,
-  .table td:last-child {
-    text-align: left;
-  }
-
-  .actionHead {
-    position: static;
-    width: auto;
-    height: auto;
-    margin: 0;
-    overflow: visible;
-    clip: auto;
-    white-space: nowrap;
-  }
-
   .viewBtn {
-    width: 74px;
+    min-width: 74px;
     height: 34px;
+    padding: 0 20px;
     font-size: 14px;
     line-height: 1.29;
-  }
-
-  .table th:not(:first-child),
-  .table td:not(:first-child) {
-    border-left: 1px solid var(--color-border);
   }
 }
 
@@ -260,25 +236,20 @@
     height: 100%;
   }
 
-  .colName {
-    width: 151px;
+  .card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
   }
 
-  .colEmail {
-    width: 211px;
+  .table {
+    flex: 1;
+    width: 100%;
   }
 
-  .colSpent {
-    width: 103px;
-  }
-
-  .colAction {
-    width: 111px;
-  }
-
-  .table th,
   .table td {
-    padding: 0 14px;
+    height: auto;
+    min-height: 76px;
   }
 
   .table th:first-child,

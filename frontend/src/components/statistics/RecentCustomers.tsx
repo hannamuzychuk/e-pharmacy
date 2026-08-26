@@ -35,9 +35,7 @@ export function RecentCustomers({
                 <th scope="col">Name</th>
                 <th scope="col">Email</th>
                 <th scope="col">Spent</th>
-                <th scope="col">
-                  <span className={styles.actionHead}>Medicine</span>
-                </th>
+                <th scope="col">Medicine</th>
               </tr>
             </thead>
             <tbody>

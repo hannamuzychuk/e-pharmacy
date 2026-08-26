@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: var(--container-padding);
   overflow: hidden;
   overscroll-behavior: none;
   touch-action: none;
@@ -17,8 +17,8 @@
   box-sizing: border-box;
   flex-shrink: 0;
   width: 100%;
-  max-width: 335px;
-  padding: 40px 20px 20px;
+  max-width: var(--content-max-width);
+  padding: 40px var(--container-padding) 20px;
   border-radius: 20px;
   background: var(--color-white);
   touch-action: auto;
@@ -173,6 +173,12 @@
   font-weight: 600;
   line-height: 1.29;
   color: var(--color-text);
+}
+
+@media (min-width: 375px) {
+  .modal {
+    max-width: 335px;
+  }
 }
 
 @media (min-width: 768px) {

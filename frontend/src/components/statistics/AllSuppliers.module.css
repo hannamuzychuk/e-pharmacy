@@ -187,4 +187,30 @@
   .card {
     height: 100%;
   }
+
+  .scroll {
+    overflow: hidden;
+    padding-bottom: 0;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .table {
+    flex: 1;
+    height: 100%;
+    width: 100%;
+  }
+
+  .table tbody tr {
+    height: 1%;
+  }
+
+  .table td {
+    height: auto;
+    min-height: 76px;
+  }
 }
