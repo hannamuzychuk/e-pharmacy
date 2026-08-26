@@ -1,5 +1,5 @@
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -7,9 +7,13 @@ import { getShopRequest, updateShopRequest } from "../../services/shopService";
 import { getApiErrorMessage } from "../../services/http";
 import { useAuth } from "../../store/auth";
 import styles from "../CreateShopPage/CreateShopPage.module.css";
-import createShopMobile from "../../images/create-shop-mobile.jpg";
-import createShopTablet from "../../images/create-shop-tablet.jpg";
-import createShopDesktop from "../../images/create-shop-desktop.jpg";
+import { ResponsivePicture } from "../../components/ResponsivePicture/ResponsivePicture";
+import {
+  createShopDesktop,
+  createShopMobile,
+  createShopTablet,
+  defaultShopLogo,
+} from "../../images/assets";
 
 type EditShopFormValues = {
   shopName: string;
@@ -37,11 +41,26 @@ const enableAutofill = (event: React.FocusEvent<HTMLInputElement>) => {
   event.currentTarget.removeAttribute("readOnly");
 };
 
+function resolveLogoUrl(logoUrl: string | null) {
+  if (!logoUrl) {
+    return defaultShopLogo;
+  }
+
+  if (logoUrl.startsWith("http") || logoUrl.startsWith("/")) {
+    return logoUrl;
+  }
+
+  return defaultShopLogo;
+}
+
 export function EditShopPage() {
   const navigate = useNavigate();
   const { shopId } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState(defaultShopLogo);
 
   const {
     register,
@@ -72,6 +91,7 @@ export function EditShopPage() {
           zipCode: shop.zipCode,
           hasDelivery: shop.hasDelivery,
         });
+        setLogoPreview(resolveLogoUrl(shop.logoUrl));
       } catch (error) {
         toast.error(getApiErrorMessage(error));
         navigate("/shop", { replace: true });
@@ -82,6 +102,14 @@ export function EditShopPage() {
 
     void loadShop();
   }, [shopId, navigate, reset]);
+
+  useEffect(() => {
+    return () => {
+      if (logoPreview.startsWith("blob:")) {
+        URL.revokeObjectURL(logoPreview);
+      }
+    };
+  }, [logoPreview]);
 
   const onInvalid = (formErrors: typeof errors) => {
     const messages = Object.values(formErrors)
@@ -96,6 +124,31 @@ export function EditShopPage() {
     messages.forEach((message) => toast.error(String(message)));
   };
 
+  const onLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file");
+      event.target.value = "";
+      return;
+    }
+
+    const maxSizeMb = 5;
+    if (file.size > maxSizeMb * 1024 * 1024) {
+      toast.error(`Image must be under ${maxSizeMb}MB`);
+      event.target.value = "";
+      return;
+    }
+
+    if (logoPreview.startsWith("blob:")) {
+      URL.revokeObjectURL(logoPreview);
+    }
+
+    setLogoFile(file);
+    setLogoPreview(URL.createObjectURL(file));
+  };
+
   const onSubmit = async (data: EditShopFormValues) => {
     try {
       setIsSubmitting(true);
@@ -103,7 +156,10 @@ export function EditShopPage() {
         throw new Error("Shop not found");
       }
 
-      await updateShopRequest(shopId, data);
+      await updateShopRequest(shopId, {
+        ...data,
+        logo: logoFile,
+      });
       toast.success("Shop data updated successfully");
       navigate("/shop");
     } catch (error) {
@@ -290,6 +346,30 @@ export function EditShopPage() {
             </div>
           </div>
 
+          <div className={styles.logoRow}>
+            <img
+              className={styles.logoPreview}
+              src={logoPreview}
+              alt="Shop logo preview"
+              width={44}
+              height={44}
+            />
+            <input
+              ref={fileInputRef}
+              className={styles.fileInput}
+              type="file"
+              accept="image/*"
+              onChange={onLogoChange}
+            />
+            <button
+              className={`btn btnOutline ${styles.uploadBtn}`}
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              Upload Logo
+            </button>
+          </div>
+
           <fieldset className={styles.delivery}>
             <legend className={styles.label}>Has Own Delivery System?</legend>
             <div className={styles.radios}>
@@ -343,17 +423,17 @@ export function EditShopPage() {
       </section>
 
       <div className={styles.imageWrap}>
-        <picture>
-          <source media="(min-width: 1440px)" srcSet={createShopDesktop} />
-          <source media="(min-width: 768px)" srcSet={createShopTablet} />
-          <img
-            className={styles.image}
-            src={createShopMobile}
-            alt="Medicine products"
-            width={335}
-            height={470}
-          />
-        </picture>
+        <ResponsivePicture
+          sources={[
+            { image: createShopDesktop, media: "(min-width: 1440px)" },
+            { image: createShopTablet, media: "(min-width: 768px)" },
+            { image: createShopMobile },
+          ]}
+          imgClassName={styles.image}
+          alt="Medicine products"
+          width={335}
+          height={470}
+        />
       </div>
     </div>
   );
