@@ -9,6 +9,8 @@ import { MedicinePage } from "../pages/MedicinePage/MedicinePage";
 import { StatisticsPage } from "../pages/StatisticsPage/StatisticsPage";
 import { CreateShopPage } from "../pages/CreateShopPage/CreateShopPage";
 import { EditShopPage } from "../pages/EditShopPage/EditShopPage";
+import { PrivacyPolicyPage } from "../pages/LegalPage/PrivacyPolicyPage";
+import { TermsConditionsPage } from "../pages/LegalPage/TermsConditionsPage";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +34,8 @@ export const router = createBrowserRouter([
           { path: "statistics", element: <StatisticsPage /> },
           { path: "create-shop", element: <CreateShopPage /> },
           { path: "edit-shop", element: <EditShopPage /> },
+          { path: "privacy-policy", element: <PrivacyPolicyPage /> },
+          { path: "terms-conditions", element: <TermsConditionsPage /> },
         ],
       },
       { path: "*", element: <Navigate to="/login" replace /> },

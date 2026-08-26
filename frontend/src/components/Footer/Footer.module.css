@@ -6,7 +6,7 @@
 .inner {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: var(--container-padding);
 }
 
 .top {
@@ -231,6 +231,12 @@
 
 .legalLink:last-child {
   flex-basis: 100%;
+}
+
+@media (min-width: 375px) {
+  .inner {
+    padding: 20px;
+  }
 }
 
 @media (min-width: 768px) {

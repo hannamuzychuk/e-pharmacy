@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
+import { ResponsivePicture } from "../ResponsivePicture/ResponsivePicture";
+import { logoDesktop, logoMobile } from "../../images/assets";
 import styles from "./Footer.module.css";
-import logoMobile from "../../images/logo-mobile.png";
-import logoDesktop from "../../images/logo-desktop.png";
 
 const navItems = [
   { to: "/shop", label: "Shop" },
@@ -40,16 +40,15 @@ export function Footer() {
         <div className={styles.top}>
           <div className={styles.brand}>
             <Link className={styles.logo} to="/shop">
-              <picture>
-                <source media="(min-width: 768px)" srcSet={logoDesktop} />
-                <img
-                  className={styles.logoIcon}
-                  src={logoMobile}
-                  alt=""
-                  width={32}
-                  height={32}
-                />
-              </picture>
+              <ResponsivePicture
+                sources={[
+                  { image: logoDesktop, media: "(min-width: 768px)" },
+                  { image: logoMobile },
+                ]}
+                imgClassName={styles.logoIcon}
+                width={32}
+                height={32}
+              />
               <span>E-Pharmacy</span>
             </Link>
 
@@ -97,16 +96,16 @@ export function Footer() {
             © E-Pharmacy 2023. All Rights Reserved
           </p>
           <span className={styles.sep} aria-hidden="true" />
-          <a className={styles.legalLink} href="#">
+          <Link className={styles.legalLink} to="/privacy-policy">
             Privacy Policy
-          </a>
+          </Link>
           <span
             className={`${styles.sep} ${styles.sepDesktop}`}
             aria-hidden="true"
           />
-          <a className={styles.legalLink} href="#">
+          <Link className={styles.legalLink} to="/terms-conditions">
             Terms &amp; Conditions
-          </a>
+          </Link>
         </div>
       </div>
     </footer>
