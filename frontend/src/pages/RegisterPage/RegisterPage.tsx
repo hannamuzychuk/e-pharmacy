@@ -2,11 +2,15 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { registerRequest } from "../../services/authService";
+import { loginRequest, registerRequest } from "../../services/authService";
+import { useAuth } from "../../store/auth";
+import { ResponsivePicture } from "../../components/ResponsivePicture/ResponsivePicture";
+import {
+  pillDesktop,
+  pillMobile,
+  pillTablet,
+} from "../../images/assets";
 import styles from "./RegisterPage.module.css";
-import pillMobile from "../../images/mobile-white-round-pill.png";
-import pillTablet from "../../images/tablet-white-round-pill.png";
-import pillDesktop from "../../images/desktop-white-round-pill.png";
 
 type RegisterFormValues = {
   name: string;
@@ -21,6 +25,7 @@ const enableAutofill = (event: React.FocusEvent<HTMLInputElement>) => {
 
 export function RegisterPage() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -50,8 +55,13 @@ export function RegisterPage() {
     try {
       setIsSubmitting(true);
       await registerRequest(data);
+      const session = await loginRequest({
+        email: data.email,
+        password: data.password,
+      });
+      login(session);
       toast.success("Account created successfully");
-      navigate("/login");
+      navigate(session.user.shopId ? "/shop" : "/create-shop");
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Something went wrong";
@@ -63,11 +73,16 @@ export function RegisterPage() {
 
   return (
     <div className={styles.page}>
-      <picture className={styles.pill}>
-        <source media="(min-width: 1440px)" srcSet={pillDesktop} />
-        <source media="(min-width: 768px)" srcSet={pillTablet} />
-        <img src={pillMobile} alt="" width={95} height={93} />
-      </picture>
+      <ResponsivePicture
+        pictureClassName={styles.pill}
+        sources={[
+          { image: pillDesktop, media: "(min-width: 1440px)" },
+          { image: pillTablet, media: "(min-width: 768px)" },
+          { image: pillMobile },
+        ]}
+        width={95}
+        height={93}
+      />
 
       <section className={styles.left}>
         <h1>

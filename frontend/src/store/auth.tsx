@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import {
   clearSessionStorage,
   getAccessToken,
@@ -6,12 +13,15 @@ import {
   setStoredShopId,
   setTokens,
 } from "../services/http";
-import { logoutRequest, getUserInfoRequest, type AuthUser } from "../services/authService";
+import {
+  getUserInfoRequest,
+  logoutRequest,
+  type AuthUser,
+} from "../services/authService";
 
 type AuthContextType = {
   isAuthenticated: boolean;
   shopId: string | null;
-  user: AuthUser | null;
   login: (session: {
     accessToken: string;
     refreshToken: string;
@@ -27,14 +37,13 @@ function clearAuthState() {
   clearSessionStorage();
 }
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    () => Boolean(getAccessToken()),
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(() =>
+    Boolean(getAccessToken()),
   );
   const [shopId, setShopIdState] = useState<string | null>(() =>
     getStoredShopId(),
   );
-  const [user, setUser] = useState<AuthUser | null>(null);
 
   const login = (session: {
     accessToken: string;
@@ -46,7 +55,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       ? String(session.user.shopId)
       : null;
     setStoredShopId(nextShopId);
-    setUser(session.user);
     setShopIdState(nextShopId);
     setIsAuthenticated(true);
   };
@@ -58,7 +66,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     } finally {
       clearAuthState();
-      setUser(null);
       setShopIdState(null);
       setIsAuthenticated(false);
     }
@@ -81,12 +88,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const nextShopId = info.shopId ? String(info.shopId) : null;
         setStoredShopId(nextShopId);
         setShopIdState(nextShopId);
-        setUser({
-          id: "",
-          name: info.name,
-          email: info.email,
-          shopId: nextShopId,
-        });
       } catch {
         return;
       }
@@ -98,7 +99,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const onAuthLogout = () => {
       clearAuthState();
-      setUser(null);
       setShopIdState(null);
       setIsAuthenticated(false);
     };
@@ -111,21 +111,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     () => ({
       isAuthenticated,
       shopId,
-      user,
       login,
       logout,
       setShopId,
     }),
-    [isAuthenticated, shopId, user],
+    [isAuthenticated, shopId],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
+}
 
-export const useAuth = () => {
+export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used inside AuthProvider");
   }
   return context;
-};
+}
