@@ -3,7 +3,6 @@ const path = require("path");
 const helmet = require("helmet");
 const cors = require("cors");
 const morgan = require("morgan");
-const cookieParser = require("cookie-parser");
 const userRoutes = require("./routes/userRoutes");
 const shopRoutes = require("./routes/shopRoutes");
 const errorHandler = require("./middlewares/errorHandler");
@@ -20,7 +19,6 @@ app.use(
 );
 app.use(morgan("dev"));
 app.use(express.json());
-app.use(cookieParser());
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use("/api/image", require("./routes/imageRoutes"));
 app.use("/api/shop", require("./routes/productRoutes"));

@@ -11,8 +11,6 @@ import { getProductImageUrl } from "../../utils/productImage";
 import shared from "../AddMedicineModal/AddMedicineModal.module.css";
 import styles from "./EditMedicineModal.module.css";
 
-export type EditMedicineProduct = Product;
-
 type EditMedicineFormValues = {
   name: string;
   price: string;
@@ -21,7 +19,7 @@ type EditMedicineFormValues = {
 
 type EditMedicineModalProps = {
   shopId: string;
-  product: EditMedicineProduct;
+  product: Product;
   onClose: () => void;
   onUpdated?: (product: Product) => void;
 };

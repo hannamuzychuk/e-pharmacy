@@ -47,4 +47,4 @@ async function getShopIdByOwner(user) {
   return shop ? shop._id : null;
 }
 
-module.exports = { ensureShopForUser, getShopIdByOwner };
+module.exports = { getShopIdByOwner };

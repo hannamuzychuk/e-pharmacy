@@ -5,7 +5,7 @@ import { getApiErrorMessage } from "../../services/http";
 import { getProductImageUrl } from "../../utils/productImage";
 import styles from "./DeleteMedicineModal.module.css";
 
-export type DeleteMedicineProduct = {
+type DeleteMedicineProduct = {
   id: string;
   name: string;
   supplier: string;
