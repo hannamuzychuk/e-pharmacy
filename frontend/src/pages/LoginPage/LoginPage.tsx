@@ -4,10 +4,13 @@ import { useAuth } from "../../store/auth";
 import { useForm } from "react-hook-form";
 import { loginRequest } from "../../services/authService";
 import toast from "react-hot-toast";
+import { ResponsivePicture } from "../../components/ResponsivePicture/ResponsivePicture";
+import {
+  pillDesktop,
+  pillMobile,
+  pillTablet,
+} from "../../images/assets";
 import styles from "./LoginPage.module.css";
-import pillMobile from "../../images/mobile-white-round-pill.png";
-import pillTablet from "../../images/tablet-white-round-pill.png";
-import pillDesktop from "../../images/desktop-white-round-pill.png";
 
 type LoginFormValues = {
   email: string;
@@ -58,11 +61,16 @@ export function LoginPage() {
 
   return (
     <div className={styles.page}>
-      <picture className={styles.pill}>
-        <source media="(min-width: 1440px)" srcSet={pillDesktop} />
-        <source media="(min-width: 768px)" srcSet={pillTablet} />
-        <img src={pillMobile} alt="" width={95} height={93} />
-      </picture>
+      <ResponsivePicture
+        pictureClassName={styles.pill}
+        sources={[
+          { image: pillDesktop, media: "(min-width: 1440px)" },
+          { image: pillTablet, media: "(min-width: 768px)" },
+          { image: pillMobile },
+        ]}
+        width={95}
+        height={93}
+      />
 
       <section className={styles.left}>
         <h1>

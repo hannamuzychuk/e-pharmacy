@@ -2,15 +2,15 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 64px 20px 80px;
+  padding: 64px var(--container-padding) 80px;
   background: var(--color-bg);
 }
 
 .card {
   width: 100%;
-  max-width: 335px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 40px var(--container-padding);
   border-radius: 27px;
   background: var(--color-white);
 }
@@ -230,7 +230,7 @@
 
 .imageWrap {
   width: 100%;
-  max-width: 335px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
 }
 
@@ -239,6 +239,13 @@
   height: 470px;
   object-fit: cover;
   border-radius: 27px;
+}
+
+@media (min-width: 375px) {
+  .card,
+  .imageWrap {
+    max-width: 335px;
+  }
 }
 
 @media (min-width: 768px) {

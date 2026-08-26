@@ -7,10 +7,13 @@ import { createShopRequest } from "../../services/shopService";
 import { getApiErrorMessage } from "../../services/http";
 import { useAuth } from "../../store/auth";
 import styles from "./CreateShopPage.module.css";
-import createShopMobile from "../../images/create-shop-mobile.jpg";
-import createShopTablet from "../../images/create-shop-tablet.jpg";
-import createShopDesktop from "../../images/create-shop-desktop.jpg";
-import defaultShopLogo from "../../images/logo-desktop.png";
+import { ResponsivePicture } from "../../components/ResponsivePicture/ResponsivePicture";
+import {
+  createShopDesktop,
+  createShopMobile,
+  createShopTablet,
+  defaultShopLogo,
+} from "../../images/assets";
 
 type CreateShopFormValues = {
   shopName: string;
@@ -382,17 +385,17 @@ export function CreateShopPage() {
       </section>
 
       <div className={styles.imageWrap}>
-        <picture>
-          <source media="(min-width: 1440px)" srcSet={createShopDesktop} />
-          <source media="(min-width: 768px)" srcSet={createShopTablet} />
-          <img
-            className={styles.image}
-            src={createShopMobile}
-            alt="Medicine products"
-            width={335}
-            height={470}
-          />
-        </picture>
+        <ResponsivePicture
+          sources={[
+            { image: createShopDesktop, media: "(min-width: 1440px)" },
+            { image: createShopTablet, media: "(min-width: 768px)" },
+            { image: createShopMobile },
+          ]}
+          imgClassName={styles.image}
+          alt="Medicine products"
+          width={335}
+          height={470}
+        />
       </div>
     </div>
   );

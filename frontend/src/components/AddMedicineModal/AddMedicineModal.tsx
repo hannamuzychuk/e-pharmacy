@@ -5,8 +5,11 @@ import toast from "react-hot-toast";
 import { addProductRequest, type Product } from "../../services/productService";
 import { getApiErrorMessage } from "../../services/http";
 import styles from "./AddMedicineModal.module.css";
-import defaultPreview from "../../images/medicine-placeholder.png";
-import defaultPreview2x from "../../images/medicine-placeholder-2x.png";
+import {
+  densitySrcSet,
+  fallbackSrcSet,
+  medicinePlaceholder,
+} from "../../images/assets";
 
 type AddMedicineFormValues = {
   name: string;
@@ -24,7 +27,7 @@ export function AddMedicineModal({ shopId, onClose, onAdded }: AddMedicineModalP
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState(defaultPreview);
+  const [imagePreview, setImagePreview] = useState(medicinePlaceholder.fallback);
 
   const {
     register,
@@ -160,18 +163,30 @@ export function AddMedicineModal({ shopId, onClose, onAdded }: AddMedicineModalP
             <div
               className={`${styles.previewFrame}${imageFile ? ` ${styles.previewFrameFilled}` : ""}`}
             >
-              <img
-                className={styles.preview}
-                src={imagePreview}
-                srcSet={
-                  !imageFile
-                    ? `${defaultPreview} 1x, ${defaultPreview2x} 2x`
-                    : undefined
-                }
-                alt="Medicine preview"
-                width={130}
-                height={130}
-              />
+              {imageFile ? (
+                <img
+                  className={styles.preview}
+                  src={imagePreview}
+                  alt="Medicine preview"
+                  width={130}
+                  height={130}
+                />
+              ) : (
+                <picture>
+                  <source
+                    type="image/webp"
+                    srcSet={densitySrcSet(medicinePlaceholder)}
+                  />
+                  <img
+                    className={styles.preview}
+                    src={medicinePlaceholder.fallback}
+                    srcSet={fallbackSrcSet(medicinePlaceholder)}
+                    alt="Medicine preview"
+                    width={130}
+                    height={130}
+                  />
+                </picture>
+              )}
             </div>
             <input
               ref={fileInputRef}

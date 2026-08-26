@@ -1,35 +1,28 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../store/auth";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { ResponsivePicture } from "../ResponsivePicture/ResponsivePicture";
+import { logoDesktop, logoMobile } from "../../images/assets";
 import styles from "./Header.module.css";
-import logoMobile from "../../images/logo-mobile.png";
-import logoDesktop from "../../images/logo-desktop.png";
 
 function LogoMark() {
   return (
-    <picture>
-      <source media="(min-width: 768px)" srcSet={logoDesktop} />
-      <img
-        className={styles.logoIcon}
-        src={logoMobile}
-        alt=""
-        width={32}
-        height={32}
-      />
-    </picture>
+    <ResponsivePicture
+      sources={[
+        { image: logoDesktop, media: "(min-width: 768px)" },
+        { image: logoMobile },
+      ]}
+      imgClassName={styles.logoIcon}
+      width={32}
+      height={32}
+    />
   );
 }
 
-const desktopNavItems = [
+const navItems = [
   { to: "/shop", label: "Shop" },
   { to: "/medicine", label: "Medicine" },
   { to: "/statistics", label: "Statistics" },
-];
-
-const mobileNavItems = [
-  { to: "/shop", label: "Home" },
-  { to: "/medicine", label: "Medicine store" },
-  { to: "/statistics", label: "Medicine" },
 ];
 
 export function Header() {
@@ -83,7 +76,7 @@ export function Header() {
       </Link>
 
       <nav className={styles.nav} aria-label="Main">
-        {desktopNavItems.map((item) => (
+        {navItems.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
@@ -145,7 +138,7 @@ export function Header() {
 
             <nav className={styles.drawerNav} aria-label="Mobile">
               <div className={styles.drawerLinks}>
-                {mobileNavItems.map((item) => (
+                {navItems.map((item) => (
                   <NavLink
                     key={item.to}
                     to={item.to}

@@ -1,4 +1,6 @@
-import placeholderImage from "../images/create-shop-mobile.jpg";
+import { createShopMobile } from "../images/assets";
+
+const placeholderImage = createShopMobile.webp1x;
 
 const ALLOWED_IMAGE_HOSTS = new Set([
   "i.ibb.co",

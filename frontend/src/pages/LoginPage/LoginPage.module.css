@@ -4,7 +4,7 @@
   flex-direction: column;
   gap: 20px;
   min-height: calc(100svh - 57px);
-  padding: 106px 20px 48px;
+  padding: 106px var(--container-padding) 48px;
   overflow: hidden;
   background: var(--color-bg);
   text-align: left;
@@ -30,12 +30,12 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 335px;
+  max-width: var(--content-max-width);
 }
 
 .left h1 {
   margin: 0;
-  max-width: 335px;
+  max-width: var(--content-max-width);
   font-family: var(--font-family);
   font-size: 28px;
   font-weight: 600;
@@ -53,7 +53,7 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 335px;
+  max-width: var(--content-max-width);
 }
 
 .right form {
@@ -184,6 +184,14 @@
 .page::after {
   right: -70px;
   bottom: 40px;
+}
+
+@media (min-width: 375px) {
+  .left,
+  .left h1,
+  .right {
+    max-width: 335px;
+  }
 }
 
 @media (min-width: 768px) {
