@@ -8,37 +8,12 @@ import {
 } from "../../services/productService";
 import styles from "./AllMedicineTab.module.css";
 import { FilterSelect } from "./FilterSelect";
+import { CatalogPagination } from "./CatalogPagination";
+import {
+  getPageItems,
+  useCatalogPageSize,
+} from "./catalogPagination";
 import { getProductImageUrl } from "../../utils/productImage";
-
-const MOBILE_PAGE_SIZE = 6;
-const DESKTOP_PAGE_SIZE = 8;
-const DESKTOP_MEDIA_QUERY = "(min-width: 1440px)";
-
-function useCatalogPageSize() {
-  const [pageSize, setPageSize] = useState(() => {
-    if (typeof window === "undefined") {
-      return MOBILE_PAGE_SIZE;
-    }
-
-    return window.matchMedia(DESKTOP_MEDIA_QUERY).matches
-      ? DESKTOP_PAGE_SIZE
-      : MOBILE_PAGE_SIZE;
-  });
-
-  useEffect(() => {
-    const media = window.matchMedia(DESKTOP_MEDIA_QUERY);
-    const updatePageSize = () => {
-      setPageSize(media.matches ? DESKTOP_PAGE_SIZE : MOBILE_PAGE_SIZE);
-    };
-
-    updatePageSize();
-    media.addEventListener("change", updatePageSize);
-
-    return () => media.removeEventListener("change", updatePageSize);
-  }, []);
-
-  return pageSize;
-}
 
 type AllMedicineTabProps = {
   shopId: string;
@@ -48,36 +23,6 @@ type AllMedicineTabProps = {
   shopProductKeys: Set<string>;
   onAdded: (product: Product) => void;
 };
-
-function getPageItems(current: number, total: number): Array<number | "ellipsis"> {
-  if (total <= 4) {
-    return Array.from({ length: total }, (_, index) => index + 1);
-  }
-
-  if (current <= 2) {
-    return [1, 2, 3, "ellipsis"];
-  }
-
-  if (current >= total - 1) {
-    return ["ellipsis", total - 2, total - 1, total];
-  }
-
-  return ["ellipsis", current - 1, current, current + 1, "ellipsis"];
-}
-
-function PaginationIcon({
-  id,
-  className,
-}: {
-  id: string;
-  className: string;
-}) {
-  return (
-    <svg className={className} aria-hidden="true">
-      <use href={`/icons.svg#${id}`} />
-    </svg>
-  );
-}
 
 export function AllMedicineTab({
   shopId,
@@ -268,87 +213,12 @@ export function AllMedicineTab({
             })}
           </ul>
 
-          {totalPages > 1 ? (
-            <nav className={styles.pagination} aria-label="Catalog pagination">
-              <div className={styles.navGroup}>
-                <button
-                  className={styles.pageBtn}
-                  type="button"
-                  aria-label="First page"
-                  disabled={currentPage === 1}
-                  onClick={() => setPage(1)}
-                >
-                  <PaginationIcon
-                    id="icon-chevron-left-double"
-                    className={styles.iconDouble}
-                  />
-                </button>
-                <button
-                  className={styles.pageBtn}
-                  type="button"
-                  aria-label="Previous page"
-                  disabled={currentPage === 1}
-                  onClick={() => setPage((prev) => Math.max(1, prev - 1))}
-                >
-                  <PaginationIcon
-                    id="icon-chevron-left"
-                    className={styles.icon}
-                  />
-                </button>
-              </div>
-
-              <div className={styles.pageGroup}>
-                {pageItems.map((item, index) =>
-                  item === "ellipsis" ? (
-                    <span key={`ellipsis-${index}`} className={styles.ellipsis}>
-                      ...
-                    </span>
-                  ) : (
-                    <button
-                      key={item}
-                      className={`${styles.pageBtn} ${styles.pageBtnNumber} ${
-                        item === currentPage ? styles.pageBtnActive : ""
-                      }`}
-                      type="button"
-                      aria-current={item === currentPage ? "page" : undefined}
-                      onClick={() => setPage(item)}
-                    >
-                      {item}
-                    </button>
-                  ),
-                )}
-              </div>
-
-              <div className={styles.navGroup}>
-                <button
-                  className={styles.pageBtn}
-                  type="button"
-                  aria-label="Next page"
-                  disabled={currentPage === totalPages}
-                  onClick={() =>
-                    setPage((prev) => Math.min(totalPages, prev + 1))
-                  }
-                >
-                  <PaginationIcon
-                    id="icon-chevron-right"
-                    className={styles.icon}
-                  />
-                </button>
-                <button
-                  className={styles.pageBtn}
-                  type="button"
-                  aria-label="Last page"
-                  disabled={currentPage === totalPages}
-                  onClick={() => setPage(totalPages)}
-                >
-                  <PaginationIcon
-                    id="icon-chevron-right-double"
-                    className={styles.iconDouble}
-                  />
-                </button>
-              </div>
-            </nav>
-          ) : null}
+          <CatalogPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageItems={pageItems}
+            onPageChange={setPage}
+          />
         </>
       )}
     </div>

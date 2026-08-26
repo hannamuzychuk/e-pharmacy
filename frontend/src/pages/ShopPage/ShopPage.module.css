@@ -1,5 +1,5 @@
 .page {
-  padding: 64px 20px 80px;
+  padding: 64px var(--container-padding) 80px;
   background: var(--color-bg);
 }
 
@@ -126,7 +126,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-width: 335px;
+  max-width: var(--content-max-width);
   height: 100%;
 }
 
@@ -217,6 +217,12 @@
   padding: 0;
   font-size: 14px;
   border-radius: 24px;
+}
+
+@media (min-width: 375px) {
+  .product {
+    max-width: 335px;
+  }
 }
 
 @media (min-width: 768px) {

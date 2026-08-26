@@ -2,28 +2,13 @@ import { useMemo, useState } from "react";
 import { ReviewCard } from "./ReviewCard";
 import styles from "./ReviewsTab.module.css";
 import type { Review } from "./types";
+import { getPageItems } from "../shop/catalogPagination";
 
 const PAGE_SIZE = 3;
 
 type ReviewsTabProps = {
   reviews: Review[];
 };
-
-function getPageItems(current: number, total: number): Array<number | "ellipsis"> {
-  if (total <= 4) {
-    return Array.from({ length: total }, (_, index) => index + 1);
-  }
-
-  if (current <= 2) {
-    return [1, 2, 3, "ellipsis"];
-  }
-
-  if (current >= total - 1) {
-    return ["ellipsis", total - 2, total - 1, total];
-  }
-
-  return ["ellipsis", current - 1, current, current + 1, "ellipsis"];
-}
 
 function PaginationIcon({
   id,

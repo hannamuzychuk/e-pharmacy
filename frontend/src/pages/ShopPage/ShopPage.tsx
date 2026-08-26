@@ -5,6 +5,11 @@ import { AddMedicineModal } from "../../components/AddMedicineModal/AddMedicineM
 import { EditMedicineModal } from "../../components/EditMedicineModal/EditMedicineModal";
 import { DeleteMedicineModal } from "../../components/DeleteMedicineModal/DeleteMedicineModal";
 import { AllMedicineTab } from "../../components/shop/AllMedicineTab";
+import { CatalogPagination } from "../../components/shop/CatalogPagination";
+import {
+  getPageItems,
+  useCatalogPageSize,
+} from "../../components/shop/catalogPagination";
 import { getShopRequest, type Shop } from "../../services/shopService";
 import {
   formatProductPrice,
@@ -31,6 +36,8 @@ export function ShopPage() {
   const [isAddMedicineOpen, setIsAddMedicineOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
+  const [page, setPage] = useState(1);
+  const pageSize = useCatalogPageSize();
 
   useEffect(() => {
     if (!shopId) {
@@ -59,6 +66,27 @@ export function ShopPage() {
 
     void loadData();
   }, [shopId, navigate]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [pageSize, products.length]);
+
+  const totalPages = Math.max(1, Math.ceil(products.length / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const visibleProducts = products.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize,
+  );
+  const pageItems = useMemo(
+    () => getPageItems(currentPage, totalPages),
+    [currentPage, totalPages],
+  );
+
+  useEffect(() => {
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [page, totalPages]);
 
   const handleEditData = () => {
     navigate("/edit-shop");
@@ -184,52 +212,61 @@ export function ShopPage() {
       </div>
 
       {activeTab === "drugStore" ? (
-        <ul className={styles.productList}>
-          {products.map((product) => (
-            <li key={product.id} className={styles.product}>
-              <Link to={`/medicine/${product.id}`}>
-                <img
-                  className={styles.productImage}
-                  src={getProductImageUrl(product.image)}
-                  alt={product.name}
-                  width={335}
-                  height={300}
-                />
-              </Link>
-              <div className={styles.productCard}>
-                <div className={styles.productTop}>
-                  <div className={styles.productText}>
-                    <h2 className={styles.productName}>
-                      <Link to={`/medicine/${product.id}`}>
-                        {product.name}
-                      </Link>
-                    </h2>
-                    <p className={styles.productSupplier}>{product.supplier}</p>
+        <>
+          <ul className={styles.productList}>
+            {visibleProducts.map((product) => (
+              <li key={product.id} className={styles.product}>
+                <Link to={`/medicine/${product.id}`}>
+                  <img
+                    className={styles.productImage}
+                    src={getProductImageUrl(product.image)}
+                    alt={product.name}
+                    width={335}
+                    height={300}
+                  />
+                </Link>
+                <div className={styles.productCard}>
+                  <div className={styles.productTop}>
+                    <div className={styles.productText}>
+                      <h2 className={styles.productName}>
+                        <Link to={`/medicine/${product.id}`}>
+                          {product.name}
+                        </Link>
+                      </h2>
+                      <p className={styles.productSupplier}>{product.supplier}</p>
+                    </div>
+                    <p className={styles.productPrice}>
+                      {formatProductPrice(product.price)}
+                    </p>
                   </div>
-                  <p className={styles.productPrice}>
-                    {formatProductPrice(product.price)}
-                  </p>
+                  <div className={styles.productActions}>
+                    <button
+                      className={`btn btnPrimary ${styles.productBtn}`}
+                      type="button"
+                      onClick={() => handleEditProduct(product)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className={`btn btnSoft ${styles.productBtn}`}
+                      type="button"
+                      onClick={() => handleDeleteProduct(product)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-                <div className={styles.productActions}>
-                  <button
-                    className={`btn btnPrimary ${styles.productBtn}`}
-                    type="button"
-                    onClick={() => handleEditProduct(product)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className={`btn btnSoft ${styles.productBtn}`}
-                    type="button"
-                    onClick={() => handleDeleteProduct(product)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+          <CatalogPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageItems={pageItems}
+            onPageChange={setPage}
+            label="Drug store pagination"
+          />
+        </>
       ) : shopId ? (
         <AllMedicineTab
           shopId={shopId}
