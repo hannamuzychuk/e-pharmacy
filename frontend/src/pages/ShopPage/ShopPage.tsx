@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { AddMedicineModal } from "../../components/AddMedicineModal/AddMedicineModal";
 import { EditMedicineModal } from "../../components/EditMedicineModal/EditMedicineModal";
 import { DeleteMedicineModal } from "../../components/DeleteMedicineModal/DeleteMedicineModal";
+import { EllipsisText } from "../../components/EllipsisText/EllipsisText";
 import { AllMedicineTab } from "../../components/shop/AllMedicineTab";
 import { CatalogPagination } from "../../components/shop/CatalogPagination";
 import {
@@ -32,7 +33,6 @@ export function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [catalog, setCatalog] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
-  const [suppliers, setSuppliers] = useState<string[]>([]);
   const [isAddMedicineOpen, setIsAddMedicineOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
@@ -55,7 +55,6 @@ export function ShopPage() {
         setProducts(productsData.products);
         setCatalog(productsData.catalog);
         setCategories(productsData.categories);
-        setSuppliers(productsData.suppliers);
       } catch (error) {
         toast.error(getApiErrorMessage(error));
         navigate("/create-shop", { replace: true });
@@ -115,6 +114,9 @@ export function ShopPage() {
     setProducts((prev) =>
       prev.map((item) => (item.id === product.id ? product : item)),
     );
+    if (product.category && !categories.includes(product.category)) {
+      setCategories((prev) => [...prev, product.category].sort());
+    }
   };
 
   const handleProductDeleted = (productId: string) => {
@@ -223,6 +225,8 @@ export function ShopPage() {
                     alt={product.name}
                     width={335}
                     height={300}
+                    loading="lazy"
+                    decoding="async"
                   />
                 </Link>
                 <div className={styles.productCard}>
@@ -230,10 +234,12 @@ export function ShopPage() {
                     <div className={styles.productText}>
                       <h2 className={styles.productName}>
                         <Link to={`/medicine/${product.id}`}>
-                          {product.name}
+                          <EllipsisText text={product.name} length={22} />
                         </Link>
                       </h2>
-                      <p className={styles.productSupplier}>{product.supplier}</p>
+                      <p className={styles.productSupplier}>
+                        <EllipsisText text={product.supplier} length={24} />
+                      </p>
                     </div>
                     <p className={styles.productPrice}>
                       {formatProductPrice(product.price)}
@@ -272,7 +278,6 @@ export function ShopPage() {
           shopId={shopId}
           catalog={catalog}
           categories={categories}
-          suppliers={suppliers}
           shopProductKeys={shopProductKeys}
           onAdded={handleProductAdded}
         />
@@ -290,6 +295,7 @@ export function ShopPage() {
         <EditMedicineModal
           shopId={shopId}
           product={editingProduct}
+          categories={categories}
           onClose={() => setEditingProduct(null)}
           onUpdated={handleProductUpdated}
         />

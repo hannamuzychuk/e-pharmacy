@@ -15,6 +15,9 @@ function LogoMark() {
       imgClassName={styles.logoIcon}
       width={32}
       height={32}
+      loading="eager"
+      decoding="async"
+      fetchPriority="high"
     />
   );
 }

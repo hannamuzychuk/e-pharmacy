@@ -1,3 +1,4 @@
+import { EllipsisText } from "../EllipsisText/EllipsisText";
 import styles from "./RecentCustomers.module.css";
 import type { RecentCustomer } from "./types";
 import { formatMoney } from "./format";
@@ -41,8 +42,12 @@ export function RecentCustomers({
             <tbody>
               {customers.map((customer) => (
                 <tr key={customer.id}>
-                  <td>{customer.name}</td>
-                  <td>{customer.email}</td>
+                  <td>
+                    <EllipsisText text={customer.name} length={18} />
+                  </td>
+                  <td>
+                    <EllipsisText text={customer.email} length={24} />
+                  </td>
                   <td>{formatMoney(customer.spent)}</td>
                   <td>
                     <button

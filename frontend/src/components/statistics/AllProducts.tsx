@@ -1,3 +1,4 @@
+import { EllipsisText } from "../EllipsisText/EllipsisText";
 import styles from "./AllProducts.module.css";
 import type { StatisticsProduct } from "./types";
 import { formatTaka } from "./format";
@@ -35,9 +36,15 @@ export function AllProducts({ products }: AllProductsProps) {
             <tbody>
               {products.map((product) => (
                 <tr key={product.id}>
-                  <td>{product.name}</td>
-                  <td>{product.category}</td>
-                  <td>{product.supplier}</td>
+                  <td>
+                    <EllipsisText text={product.name} length={22} />
+                  </td>
+                  <td>
+                    <EllipsisText text={product.category} length={18} />
+                  </td>
+                  <td>
+                    <EllipsisText text={product.supplier} length={20} />
+                  </td>
                   <td>{formatTaka(product.price)}</td>
                 </tr>
               ))}

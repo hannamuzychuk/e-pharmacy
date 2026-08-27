@@ -11,6 +11,18 @@
   color: var(--color-text-muted);
 }
 
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .selectWrap {
   position: relative;
   width: 100%;
@@ -30,6 +42,10 @@
   color: var(--color-text);
   text-align: left;
   cursor: pointer;
+}
+
+.triggerPlaceholder {
+  color: var(--color-text-muted);
 }
 
 .triggerOpen,

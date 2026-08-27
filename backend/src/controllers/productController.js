@@ -41,13 +41,34 @@ function dedupeCatalogProducts(products) {
 
 async function listProducts(req, res) {
   const shopObjectId = req.shop._id;
+  const category =
+    typeof req.query.category === "string" ? req.query.category.trim() : "";
+  const search =
+    typeof req.query.search === "string" ? req.query.search.trim() : "";
+
   const [allProducts, categories, suppliers] = await Promise.all([
     Product.find().sort({ createdAt: -1 }),
     Product.distinct("category"),
     Product.distinct("suppliers"),
   ]);
 
-  const catalogProducts = dedupeCatalogProducts(allProducts);
+  let catalogProducts = dedupeCatalogProducts(allProducts);
+
+  if (category && category !== "all") {
+    catalogProducts = catalogProducts.filter(
+      (product) => product.category === category
+    );
+  }
+
+  if (search) {
+    const query = search.toLowerCase();
+    catalogProducts = catalogProducts.filter((product) => {
+      const name = String(product.name || "").toLowerCase();
+      const description = String(product.description || "").toLowerCase();
+      return name.includes(query) || description.includes(query);
+    });
+  }
+
   const shopProducts = allProducts.filter(
     (product) =>
       product.shopId && product.shopId.toString() === shopObjectId.toString()

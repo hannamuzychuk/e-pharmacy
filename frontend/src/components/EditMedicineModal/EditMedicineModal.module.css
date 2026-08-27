@@ -6,6 +6,14 @@
   border-color: var(--color-primary);
 }
 
+.categoryField {
+  width: 100%;
+}
+
+.categoryField :global(button) {
+  border-color: var(--color-primary);
+}
+
 .submitBtn {
   flex: 0 0 148px;
   width: 148px;

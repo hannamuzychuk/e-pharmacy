@@ -21,6 +21,8 @@ export function ProductOverview({
         alt={medicine.name}
         width={364}
         height={284}
+        loading="lazy"
+        decoding="async"
       />
 
       <div className={styles.infoCard}>

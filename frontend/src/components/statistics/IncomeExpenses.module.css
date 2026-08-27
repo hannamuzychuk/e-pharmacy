@@ -29,12 +29,33 @@
   padding: 14px 14px 20px;
 }
 
+.dateRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
 .today {
-  margin: 0 0 14px;
+  margin: 0;
   font-size: 14px;
   font-weight: 400;
   line-height: 1.29;
   color: var(--color-text-muted);
+}
+
+.dateField {
+  width: 168px;
+}
+
+.empty {
+  margin: 0;
+  padding: 8px 0 4px;
+  font-size: 14px;
+  line-height: 1.29;
+  color: var(--color-text-secondary);
 }
 
 .list {
@@ -140,7 +161,7 @@
     padding: 20px;
   }
 
-  .today {
+  .dateRow {
     margin-bottom: 20px;
   }
 

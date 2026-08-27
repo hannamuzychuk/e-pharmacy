@@ -11,6 +11,8 @@ type FilterSelectProps = {
   value: string;
   options: FilterSelectOption[];
   onChange: (value: string) => void;
+  hideLabel?: boolean;
+  placeholder?: string;
 };
 
 export function FilterSelect({
@@ -18,13 +20,18 @@ export function FilterSelect({
   value,
   options,
   onChange,
+  hideLabel = false,
+  placeholder,
 }: FilterSelectProps) {
   const listboxId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const selectedLabel =
-    options.find((option) => option.value === value)?.label ?? value;
+  const selectedOption = options.find((option) => option.value === value);
+  const isPlaceholder = Boolean(placeholder) && (!selectedOption || value === "all");
+  const selectedLabel = isPlaceholder
+    ? placeholder
+    : (selectedOption?.label ?? value);
 
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent) => {
@@ -50,13 +57,21 @@ export function FilterSelect({
 
   return (
     <div className={styles.field} ref={rootRef}>
-      <span className={styles.label} id={`${listboxId}-label`}>
-        {label}
-      </span>
+      {!hideLabel ? (
+        <span className={styles.label} id={`${listboxId}-label`}>
+          {label}
+        </span>
+      ) : (
+        <span className={styles.srOnly} id={`${listboxId}-label`}>
+          {label}
+        </span>
+      )}
 
       <div className={styles.selectWrap}>
         <button
-          className={`${styles.trigger} ${isOpen ? styles.triggerOpen : ""}`}
+          className={`${styles.trigger} ${isOpen ? styles.triggerOpen : ""} ${
+            isPlaceholder ? styles.triggerPlaceholder : ""
+          }`}
           type="button"
           aria-haspopup="listbox"
           aria-expanded={isOpen}

@@ -1,6 +1,6 @@
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import {
   updateProductRequest,
@@ -8,6 +8,7 @@ import {
 } from "../../services/productService";
 import { getApiErrorMessage } from "../../services/http";
 import { getProductImageUrl } from "../../utils/productImage";
+import { FilterSelect } from "../shop/FilterSelect";
 import shared from "../AddMedicineModal/AddMedicineModal.module.css";
 import styles from "./EditMedicineModal.module.css";
 
@@ -15,11 +16,13 @@ type EditMedicineFormValues = {
   name: string;
   price: string;
   description: string;
+  category: string;
 };
 
 type EditMedicineModalProps = {
   shopId: string;
   product: Product;
+  categories: string[];
   onClose: () => void;
   onUpdated?: (product: Product) => void;
 };
@@ -30,16 +33,27 @@ const defaultDescription =
 export function EditMedicineModal({
   shopId,
   product,
+  categories,
   onClose,
   onUpdated,
 }: EditMedicineModalProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState(getProductImageUrl(product.image));
+  const [imagePreview, setImagePreview] = useState(
+    getProductImageUrl(product.image),
+  );
+
+  const categoryOptions = useMemo(() => {
+    const unique = new Set(
+      [...categories, product.category].filter(Boolean),
+    );
+    return Array.from(unique).sort((a, b) => a.localeCompare(b));
+  }, [categories, product.category]);
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors },
@@ -49,8 +63,14 @@ export function EditMedicineModal({
       name: product.name,
       price: product.price,
       description: product.description || defaultDescription,
+      category: product.category || categoryOptions[0] || "",
     },
   });
+
+  const filterCategoryOptions = useMemo(
+    () => categoryOptions.map((item) => ({ value: item, label: item })),
+    [categoryOptions],
+  );
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -128,7 +148,7 @@ export function EditMedicineModal({
         name: data.name,
         price: data.price,
         description: data.description,
-        category: product.category,
+        category: data.category,
         stock: product.stock,
         suppliers: product.suppliers,
         photo: imageFile,
@@ -175,7 +195,7 @@ export function EditMedicineModal({
         </button>
 
         <h2 id="edit-medicine-title" className={shared.title}>
-          Edit medicine
+          Edit Product Details
         </h2>
 
         <form
@@ -215,7 +235,7 @@ export function EditMedicineModal({
               >
                 <use href="/icons.svg#icon-attachment" />
               </svg>
-              Change image
+              Change Image
             </button>
           </div>
 
@@ -256,9 +276,27 @@ export function EditMedicineModal({
             </label>
           </div>
 
+          <div className={styles.categoryField}>
+            <Controller
+              name="category"
+              control={control}
+              rules={{ required: "Category is required" }}
+              render={({ field }) => (
+                <FilterSelect
+                  label="Category"
+                  value={field.value}
+                  options={filterCategoryOptions}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+          </div>
+
           <label className={shared.field}>
             <span className={shared.label}>Description</span>
-            <div className={`${shared.textareaShell} ${styles.textareaShellFilled}`}>
+            <div
+              className={`${shared.textareaShell} ${styles.textareaShellFilled}`}
+            >
               <textarea
                 className={shared.textarea}
                 placeholder="Enter text"
@@ -280,7 +318,7 @@ export function EditMedicineModal({
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Saving..." : "Save medicine"}
+              {isSubmitting ? "Saving..." : "Save Changes"}
             </button>
             <button
               className={`btn btnCancel ${shared.cancelBtn}`}

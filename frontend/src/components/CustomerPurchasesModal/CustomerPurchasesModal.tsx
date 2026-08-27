@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { EllipsisText } from "../EllipsisText/EllipsisText";
 import styles from "./CustomerPurchasesModal.module.css";
 import type { CustomerPurchase, RecentCustomer } from "../statistics/types";
 import { formatMoney, formatTaka } from "../statistics/format";
@@ -81,11 +82,15 @@ export function CustomerPurchasesModal({
         <div className={styles.client}>
           <div className={styles.clientCol}>
             <span className={styles.clientLabel}>Name</span>
-            <span className={styles.clientValue}>{customer.name}</span>
+            <span className={styles.clientValue}>
+              <EllipsisText text={customer.name} length={20} />
+            </span>
           </div>
           <div className={styles.clientCol}>
             <span className={styles.clientLabel}>Email</span>
-            <span className={styles.clientValue}>{customer.email}</span>
+            <span className={styles.clientValue}>
+              <EllipsisText text={customer.email} length={24} />
+            </span>
           </div>
           <div className={styles.clientCol}>
             <span className={styles.clientLabel}>Spent</span>
@@ -105,7 +110,7 @@ export function CustomerPurchasesModal({
               <li key={purchase.id}>
                 <Link
                   className={styles.item}
-                  to="/medicine"
+                  to={`/medicine/${purchase.id}`}
                   onClick={onClose}
                 >
                   <img
@@ -114,10 +119,16 @@ export function CustomerPurchasesModal({
                     alt={purchase.name}
                     width={80}
                     height={80}
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className={styles.itemBody}>
-                    <p className={styles.name}>{purchase.name}</p>
-                    <p className={styles.description}>{purchase.description}</p>
+                    <p className={styles.name}>
+                      <EllipsisText text={purchase.name} length={28} />
+                    </p>
+                    <p className={styles.description}>
+                      <EllipsisText text={purchase.description} length={48} />
+                    </p>
                     <p className={styles.price}>{formatTaka(purchase.amount)}</p>
                   </div>
                 </Link>

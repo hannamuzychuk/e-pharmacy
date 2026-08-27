@@ -4,8 +4,10 @@ import toast from "react-hot-toast";
 import {
   addCatalogToShopRequest,
   formatProductPrice,
+  getProductsRequest,
   type Product,
 } from "../../services/productService";
+import { EllipsisText } from "../EllipsisText/EllipsisText";
 import styles from "./AllMedicineTab.module.css";
 import { FilterSelect } from "./FilterSelect";
 import { CatalogPagination } from "./CatalogPagination";
@@ -19,49 +21,38 @@ type AllMedicineTabProps = {
   shopId: string;
   catalog: Product[];
   categories: string[];
-  suppliers: string[];
   shopProductKeys: Set<string>;
   onAdded: (product: Product) => void;
+};
+
+type Filters = {
+  search: string;
+  category: string;
+};
+
+const INITIAL_FILTERS: Filters = {
+  search: "",
+  category: "all",
 };
 
 export function AllMedicineTab({
   shopId,
   catalog,
   categories,
-  suppliers,
   shopProductKeys,
   onAdded,
 }: AllMedicineTabProps) {
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("all");
-  const [supplier, setSupplier] = useState("all");
+  const [draft, setDraft] = useState<Filters>(INITIAL_FILTERS);
+  const [applied, setApplied] = useState<Filters>(INITIAL_FILTERS);
+  const [filteredCatalog, setFilteredCatalog] = useState(catalog);
+  const [isFiltering, setIsFiltering] = useState(false);
   const [page, setPage] = useState(1);
   const [addingId, setAddingId] = useState<string | null>(null);
   const pageSize = useCatalogPageSize();
 
-  const filteredCatalog = useMemo(() => {
-    const query = search.trim().toLowerCase();
-
-    return catalog.filter((product) => {
-      if (category !== "all" && product.category !== category) {
-        return false;
-      }
-
-      if (supplier !== "all" && product.supplier !== supplier) {
-        return false;
-      }
-
-      if (
-        query &&
-        !product.name.toLowerCase().includes(query) &&
-        !product.description.toLowerCase().includes(query)
-      ) {
-        return false;
-      }
-
-      return true;
-    });
-  }, [catalog, category, supplier, search]);
+  useEffect(() => {
+    setFilteredCatalog(catalog);
+  }, [catalog]);
 
   const totalPages = Math.max(1, Math.ceil(filteredCatalog.length / pageSize));
   const currentPage = Math.min(page, totalPages);
@@ -76,13 +67,31 @@ export function AllMedicineTab({
 
   useEffect(() => {
     setPage(1);
-  }, [search, category, supplier, pageSize]);
+  }, [applied, pageSize, filteredCatalog.length]);
 
   useEffect(() => {
     if (page > totalPages) {
       setPage(totalPages);
     }
   }, [page, totalPages]);
+
+  const handleFilter = async () => {
+    try {
+      setIsFiltering(true);
+      const data = await getProductsRequest(shopId, {
+        category: draft.category,
+        search: draft.search,
+      });
+      setApplied(draft);
+      setFilteredCatalog(data.catalog);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Something went wrong";
+      toast.error(message);
+    } finally {
+      setIsFiltering(false);
+    }
+  };
 
   const handleAddToShop = async (product: Product) => {
     const productKey = `${product.name}|${product.supplier}`;
@@ -117,42 +126,50 @@ export function AllMedicineTab({
     [categories],
   );
 
-  const supplierOptions = useMemo(
-    () => [
-      { value: "all", label: "All suppliers" },
-      ...suppliers.map((item) => ({ value: item, label: item })),
-    ],
-    [suppliers],
-  );
-
   return (
     <div className={styles.wrap}>
-      <div className={styles.filters}>
+      <form
+        className={styles.filters}
+        onSubmit={(event) => {
+          event.preventDefault();
+          void handleFilter();
+        }}
+      >
+        <FilterSelect
+          label="Product category"
+          hideLabel
+          placeholder="Product category"
+          value={draft.category}
+          options={categoryOptions}
+          onChange={(category) =>
+            setDraft((prev) => ({ ...prev, category }))
+          }
+        />
+
         <label className={styles.field}>
-          <span className={styles.label}>Search</span>
+          <span className={styles.srOnly}>Search medicine</span>
           <input
             className={styles.input}
             type="search"
             placeholder="Search medicine"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            value={draft.search}
+            onChange={(event) =>
+              setDraft((prev) => ({ ...prev, search: event.target.value }))
+            }
           />
         </label>
 
-        <FilterSelect
-          label="Category"
-          value={category}
-          options={categoryOptions}
-          onChange={setCategory}
-        />
-
-        <FilterSelect
-          label="Supplier"
-          value={supplier}
-          options={supplierOptions}
-          onChange={setSupplier}
-        />
-      </div>
+        <button
+          className={styles.filterBtn}
+          type="submit"
+          disabled={isFiltering}
+        >
+          <svg width="16" height="16" aria-hidden="true">
+            <use href="/icons.svg#icon-filter" />
+          </svg>
+          {isFiltering ? "..." : "Filter"}
+        </button>
+      </form>
 
       {filteredCatalog.length === 0 ? (
         <p className={styles.empty}>No medicines match your filters.</p>
@@ -173,6 +190,8 @@ export function AllMedicineTab({
                       alt={product.name}
                       width={335}
                       height={300}
+                      loading="lazy"
+                      decoding="async"
                     />
                   </Link>
                   <div className={styles.productCard}>
@@ -180,11 +199,11 @@ export function AllMedicineTab({
                       <div className={styles.productText}>
                         <h2 className={styles.productName}>
                           <Link to={`/medicine/${product.id}`}>
-                            {product.name}
+                            <EllipsisText text={product.name} length={22} />
                           </Link>
                         </h2>
                         <p className={styles.productSupplier}>
-                          {product.supplier}
+                          <EllipsisText text={product.supplier} length={24} />
                         </p>
                       </div>
                       <p className={styles.productPrice}>
@@ -201,7 +220,7 @@ export function AllMedicineTab({
                         {isAdding ? "..." : isInShop ? "Added" : "Add to shop"}
                       </button>
                       <Link
-                        className={`btn btnSoft ${styles.productBtn} ${styles.detailsBtn}`}
+                        className={styles.detailsLink}
                         to={`/medicine/${product.id}`}
                       >
                         Details

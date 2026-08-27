@@ -100,6 +100,8 @@ export function DeleteMedicineModal({
               alt={product.name}
               width={130}
               height={130}
+              loading="lazy"
+              decoding="async"
             />
           </div>
           <h3 className={styles.productName}>{product.name}</h3>

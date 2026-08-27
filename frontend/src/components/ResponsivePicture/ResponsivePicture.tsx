@@ -21,6 +21,8 @@ export function ResponsivePicture({
   imgClassName,
   pictureClassName,
   alt = "",
+  loading = "lazy",
+  decoding = "async",
   ...imgProps
 }: ResponsivePictureProps) {
   const fallback = sources[sources.length - 1]?.image;
@@ -44,6 +46,8 @@ export function ResponsivePicture({
         src={fallback.fallback}
         srcSet={fallbackSrcSet(fallback)}
         alt={alt}
+        loading={loading}
+        decoding={decoding}
         {...imgProps}
       />
     </picture>

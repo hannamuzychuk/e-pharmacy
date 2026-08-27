@@ -57,10 +57,22 @@ export function formatProductPrice(price: string) {
   return normalized ? `৳${normalized}` : "৳0";
 }
 
-export async function getProductsRequest(shopId: string) {
+export async function getProductsRequest(
+  shopId: string,
+  filters?: { category?: string; search?: string },
+) {
   try {
+    const params = new URLSearchParams();
+    if (filters?.category && filters.category !== "all") {
+      params.set("category", filters.category);
+    }
+    if (filters?.search?.trim()) {
+      params.set("search", filters.search.trim());
+    }
+
+    const query = params.toString();
     const { data } = await api.get<ProductsResponse>(
-      `/api/shop/${shopId}/product`,
+      `/api/shop/${shopId}/product${query ? `?${query}` : ""}`,
     );
     return data;
   } catch (error) {
