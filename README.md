@@ -131,6 +131,33 @@ Base URL (local): `http://localhost:5000`
 | `/statistics` | Private | Statistics dashboard |
 | `/privacy-policy`, `/terms-conditions` | Private | Legal pages |
 
+## Deployment (Render)
+
+| App | URL |
+| --- | --- |
+| Frontend | https://e-pharmacy-1-xcmx.onrender.com |
+| Backend | https://e-pharmacy-hkal.onrender.com |
+| Health check | https://e-pharmacy-hkal.onrender.com/api/health |
+
+### Backend (Web Service)
+
+- **Root Directory:** `backend`
+- **Build:** `npm install`
+- **Start:** `npm start`
+- **Environment:** `MONGODB_URI`, `CLIENT_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `ACCESS_TOKEN_TTL`, `REFRESH_TOKEN_TTL`
+
+Set `CLIENT_URL` to the frontend URL (no trailing slash).
+
+### Frontend (Static Site)
+
+- **Root Directory:** `frontend`
+- **Build:** `npm install && npm run build`
+- **Publish Directory:** `dist`
+- **Environment:** `VITE_API_URL=https://e-pharmacy-hkal.onrender.com`
+- **Rewrite:** `/*` → `/index.html` (SPA)
+
+Free Render instances may sleep after inactivity; the first request can take ~30–60s.
+
 ## License
 
 ISC
