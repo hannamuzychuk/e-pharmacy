@@ -14,6 +14,7 @@ import {
   createShopTablet,
   defaultShopLogo,
 } from "../../images/assets";
+import { resolveApiUrl } from "../../utils/apiBase";
 
 type EditShopFormValues = {
   shopName: string;
@@ -46,8 +47,12 @@ function resolveLogoUrl(logoUrl: string | null) {
     return defaultShopLogo;
   }
 
-  if (logoUrl.startsWith("http") || logoUrl.startsWith("/")) {
+  if (logoUrl.startsWith("http")) {
     return logoUrl;
+  }
+
+  if (logoUrl.startsWith("/")) {
+    return resolveApiUrl(logoUrl);
   }
 
   return defaultShopLogo;

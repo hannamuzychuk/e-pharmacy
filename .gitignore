@@ -13,6 +13,7 @@ dist-ssr
 
 .env
 backend/.env
+frontend/.env
 backend/uploads/logos/*
 !backend/uploads/logos/.gitkeep
 backend/uploads/products/*

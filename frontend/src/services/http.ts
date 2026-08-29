@@ -1,4 +1,5 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
+import { API_BASE_URL, resolveApiUrl } from "../utils/apiBase";
 
 const ACCESS_TOKEN_KEY = "accessToken";
 const REFRESH_TOKEN_KEY = "refreshToken";
@@ -7,7 +8,7 @@ const SHOP_ID_KEY = "shopId";
 type RetryConfig = InternalAxiosRequestConfig & { _retry?: boolean };
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "",
+  baseURL: API_BASE_URL,
 });
 
 export function getAccessToken() {
@@ -97,7 +98,9 @@ api.interceptors.response.use(
     original._retry = true;
 
     try {
-      const { data } = await axios.post("/api/user/refresh", { refreshToken });
+      const { data } = await axios.post(resolveApiUrl("/api/user/refresh"), {
+        refreshToken,
+      });
       setTokens(data.accessToken, data.refreshToken);
       original.headers.Authorization = `Bearer ${data.accessToken}`;
       return api(original);
