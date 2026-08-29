@@ -33,7 +33,7 @@
   --container-padding: 16px;
   --content-max-width: 100%;
 
-  --font-family: "Inter", sans-serif;
+  --font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
 @media (min-width: 375px) {
