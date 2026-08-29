@@ -8,6 +8,7 @@ import { getApiErrorMessage } from "../../services/http";
 import { useAuth } from "../../store/auth";
 import styles from "../CreateShopPage/CreateShopPage.module.css";
 import { ResponsivePicture } from "../../components/ResponsivePicture/ResponsivePicture";
+import { Loader } from "../../components/Loader/Loader";
 import {
   createShopDesktop,
   createShopMobile,
@@ -179,7 +180,7 @@ export function EditShopPage() {
   if (isLoading) {
     return (
       <div className={styles.page}>
-        <p className={styles.subtitle}>Loading shop data...</p>
+        <Loader label="Loading shop data..." />
       </div>
     );
   }

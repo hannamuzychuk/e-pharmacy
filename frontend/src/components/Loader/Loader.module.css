@@ -1,0 +1,290 @@
+.page,
+.inline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+}
+
+.page {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: min(60vh, 420px);
+  padding: 40px var(--container-padding);
+}
+
+.inline {
+  min-height: 220px;
+  padding: 36px 16px;
+  gap: 22px;
+}
+
+.visual {
+  position: relative;
+  width: 160px;
+  height: 160px;
+}
+
+.inline .visual {
+  width: 124px;
+  height: 124px;
+}
+
+.blob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 78%;
+  height: 78%;
+  border-radius: 42% 58% 55% 45% / 48% 42% 58% 52%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(89, 177, 122, 0.22) 42%,
+    rgba(89, 177, 122, 0.06) 70%,
+    transparent 78%
+  );
+  filter: blur(1px);
+  transform: translate(-50%, -50%);
+  animation: blobMorph 4.5s ease-in-out infinite;
+}
+
+.ringTrack,
+.ringSweep {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+}
+
+.ringTrack {
+  border: 1.5px solid rgba(89, 177, 122, 0.14);
+}
+
+.ringSweep {
+  border: 2.5px solid transparent;
+  border-top-color: var(--color-primary);
+  border-right-color: rgba(89, 177, 122, 0.35);
+  filter: drop-shadow(0 0 6px rgba(89, 177, 122, 0.35));
+  animation: sweep 1.35s cubic-bezier(0.5, 0.15, 0.35, 1) infinite;
+}
+
+.pills {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  gap: 10px;
+  transform: translate(-50%, -50%);
+}
+
+.inline .pills {
+  gap: 8px;
+}
+
+.pill {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 22px;
+  height: 40px;
+  overflow: hidden;
+  border: 1px solid rgba(89, 177, 122, 0.28);
+  border-radius: 999px;
+  box-shadow:
+    0 10px 24px rgba(89, 177, 122, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  transform-origin: center bottom;
+  animation: pillFloat 1.5s ease-in-out infinite;
+}
+
+.inline .pill {
+  width: 16px;
+  height: 30px;
+}
+
+.pillOne {
+  animation-delay: 0s;
+}
+
+.pillTwo {
+  animation-delay: 0.18s;
+}
+
+.pillThree {
+  animation-delay: 0.36s;
+}
+
+.pillLight,
+.pillDark {
+  flex: 1;
+  width: 100%;
+}
+
+.pillLight {
+  background: linear-gradient(180deg, #ffffff 0%, #eef6f1 100%);
+}
+
+.pillDark {
+  background: linear-gradient(
+    180deg,
+    #7dcea0 0%,
+    var(--color-primary) 48%,
+    var(--color-primary-hover) 100%
+  );
+}
+
+.pill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.55) 48%,
+    transparent 62%
+  );
+  transform: translateX(-120%);
+  animation: shimmer 2.2s ease-in-out infinite;
+}
+
+.pillOne::after {
+  animation-delay: 0.1s;
+}
+
+.pillTwo::after {
+  animation-delay: 0.35s;
+}
+
+.pillThree::after {
+  animation-delay: 0.6s;
+}
+
+.label {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--color-text-secondary);
+}
+
+.inline .label {
+  font-size: 14px;
+}
+
+.dots {
+  display: inline-flex;
+  gap: 3px;
+  margin-left: 2px;
+}
+
+.dots span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  opacity: 0.35;
+  animation: dotBlink 1.2s ease-in-out infinite;
+}
+
+.dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blobMorph {
+  0%,
+  100% {
+    border-radius: 42% 58% 55% 45% / 48% 42% 58% 52%;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+
+  33% {
+    border-radius: 55% 45% 42% 58% / 55% 50% 50% 45%;
+    transform: translate(-50%, -50%) scale(1.06) rotate(8deg);
+  }
+
+  66% {
+    border-radius: 48% 52% 60% 40% / 42% 58% 42% 58%;
+    transform: translate(-50%, -50%) scale(0.96) rotate(-6deg);
+  }
+}
+
+@keyframes sweep {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pillFloat {
+  0%,
+  100% {
+    transform: translateY(8px) scale(0.94);
+    opacity: 0.72;
+  }
+
+  50% {
+    transform: translateY(-10px) scale(1.04);
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0%,
+  40% {
+    transform: translateX(-120%);
+  }
+
+  70%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes dotBlink {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob,
+  .ringSweep,
+  .pill,
+  .pill::after,
+  .dots span {
+    animation: none;
+  }
+
+  .pill {
+    opacity: 1;
+    transform: none;
+  }
+
+  .ringSweep {
+    border-top-color: var(--color-primary);
+    border-right-color: var(--color-primary-soft-25);
+  }
+
+  .dots span {
+    opacity: 0.7;
+  }
+}

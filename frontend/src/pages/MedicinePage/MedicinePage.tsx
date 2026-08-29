@@ -17,6 +17,7 @@ import {
 } from "../../services/productService";
 import { getApiErrorMessage } from "../../services/http";
 import { useAuth } from "../../store/auth";
+import { Loader } from "../../components/Loader/Loader";
 import { getProductImageUrl } from "../../utils/productImage";
 import styles from "./MedicinePage.module.css";
 
@@ -119,7 +120,7 @@ export function MedicinePage() {
   if (isLoading || !medicine) {
     return (
       <div className={styles.page}>
-        <p className={styles.status}>Loading medicine...</p>
+        <Loader label="Loading medicine..." />
       </div>
     );
   }

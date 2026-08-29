@@ -5,6 +5,7 @@ import styles from "./CustomerPurchasesModal.module.css";
 import type { CustomerPurchase, RecentCustomer } from "../statistics/types";
 import { formatMoney, formatTaka } from "../statistics/format";
 import { getProductImageUrl } from "../../utils/productImage";
+import { Loader } from "../Loader/Loader";
 
 type CustomerPurchasesModalProps = {
   customer: RecentCustomer;
@@ -101,7 +102,7 @@ export function CustomerPurchasesModal({
         </div>
 
         {isLoading || !purchases ? (
-          <p className={styles.status}>Loading purchases...</p>
+          <Loader variant="inline" label="Loading purchases..." />
         ) : purchases.length === 0 ? (
           <p className={styles.status}>No purchases found.</p>
         ) : (

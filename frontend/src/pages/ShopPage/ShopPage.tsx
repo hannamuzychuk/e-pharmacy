@@ -20,6 +20,7 @@ import {
 import { getApiErrorMessage } from "../../services/http";
 import { useAuth } from "../../store/auth";
 import { getProductImageUrl } from "../../utils/productImage";
+import { Loader } from "../../components/Loader/Loader";
 import styles from "./ShopPage.module.css";
 
 type ShopTab = "drugStore" | "allMedicine";
@@ -128,6 +129,14 @@ export function ShopPage() {
     [products],
   );
 
+  if (isLoading) {
+    return (
+      <div className={styles.page}>
+        <Loader label="Loading shop..." />
+      </div>
+    );
+  }
+
   return (
     <div className={styles.page}>
       <div className={styles.top}>
@@ -153,9 +162,7 @@ export function ShopPage() {
                 <span>
                   {shop
                     ? `${shop.streetAddress}, ${shop.city}`
-                    : isLoading
-                      ? "Loading..."
-                      : "—"}
+                    : "—"}
                 </span>
               </div>
 

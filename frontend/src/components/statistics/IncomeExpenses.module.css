@@ -47,7 +47,16 @@
 }
 
 .dateField {
-  width: 168px;
+  width: 180px;
+}
+
+.calendarBtn {
+  margin-right: 2px;
+}
+
+.calendarPaper {
+  overflow: hidden;
+  border-radius: 20px !important;
 }
 
 .empty {

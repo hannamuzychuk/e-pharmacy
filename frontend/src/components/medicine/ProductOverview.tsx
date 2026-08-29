@@ -1,5 +1,4 @@
 import styles from "./ProductOverview.module.css";
-import { getProductImageUrl } from "../../utils/productImage";
 import type { Medicine } from "./types";
 
 type ProductOverviewProps = {
@@ -17,7 +16,7 @@ export function ProductOverview({
     <section className={styles.overview}>
       <img
         className={styles.image}
-        src={getProductImageUrl(medicine.image)}
+        src={medicine.image}
         alt={medicine.name}
         width={364}
         height={284}

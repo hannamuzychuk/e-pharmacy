@@ -15,7 +15,12 @@ export function getProductImageUrl(image?: string | null) {
     return placeholderImage;
   }
 
-  if (image.startsWith("data:")) {
+  if (
+    image.startsWith("data:") ||
+    image.startsWith("blob:") ||
+    image.startsWith("/assets/") ||
+    image.includes("/api/image?")
+  ) {
     return image;
   }
 

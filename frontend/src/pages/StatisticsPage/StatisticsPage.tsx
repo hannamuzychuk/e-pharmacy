@@ -6,6 +6,7 @@ import { AllSuppliers } from "../../components/statistics/AllSuppliers";
 import { RecentCustomers } from "../../components/statistics/RecentCustomers";
 import { IncomeExpenses } from "../../components/statistics/IncomeExpenses";
 import { CustomerPurchasesModal } from "../../components/CustomerPurchasesModal/CustomerPurchasesModal";
+import { Loader } from "../../components/Loader/Loader";
 import {
   fetchCustomerPurchases,
   fetchStatistics,
@@ -87,7 +88,7 @@ export function StatisticsPage() {
       <h1 className={styles.title}>Statistics</h1>
 
       {isLoading ? (
-        <p className={styles.status}>Loading statistics...</p>
+        <Loader label="Loading statistics..." />
       ) : !data ? (
         <p className={styles.status}>Could not load statistics.</p>
       ) : (
