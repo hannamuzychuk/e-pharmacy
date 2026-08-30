@@ -8,7 +8,7 @@ import {
 } from "../../components/medicine/TabsContainer";
 import type { Medicine } from "../../components/medicine/types";
 import {
-  addProductRequest,
+  addCatalogToShopRequest,
   formatProductPrice,
   getProductRequest,
   getProductsRequest,
@@ -51,6 +51,7 @@ export function MedicinePage() {
   const { shopId } = useAuth();
   const [activeTab, setActiveTab] = useState<MedicineTab>("description");
   const [isAdding, setIsAdding] = useState(false);
+  const [isInShop, setIsInShop] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [medicine, setMedicine] = useState<Medicine | null>(null);
   const [product, setProduct] = useState<Product | null>(null);
@@ -68,7 +69,7 @@ export function MedicinePage() {
 
         if (!targetId) {
           const list = await getProductsRequest(shopId);
-          targetId = list.products[0]?.id;
+          targetId = list.catalog[0]?.id ?? list.products[0]?.id;
         }
 
         if (!targetId) {
@@ -80,9 +81,21 @@ export function MedicinePage() {
           return;
         }
 
-        const data = await getProductRequest(shopId, targetId);
+        const [data, list] = await Promise.all([
+          getProductRequest(shopId, targetId),
+          getProductsRequest(shopId),
+        ]);
+
+        const shopKeys = new Set(
+          list.products.map(
+            (item) => `${item.name}|${item.suppliers || item.supplier}`,
+          ),
+        );
+        const key = `${data.product.name}|${data.product.suppliers || data.product.supplier}`;
+
         setProduct(data.product);
         setMedicine(toMedicine(data.product, data.reviews));
+        setIsInShop(shopKeys.has(key));
       } catch (error) {
         toast.error(getApiErrorMessage(error));
         navigate("/shop", { replace: true });
@@ -95,23 +108,19 @@ export function MedicinePage() {
   }, [shopId, productId, navigate]);
 
   const handleAddToShop = async () => {
-    if (!shopId || !product) {
+    if (!shopId || !product || isInShop) {
       return;
     }
 
     try {
       setIsAdding(true);
-      await addProductRequest(shopId, {
-        name: product.name,
-        price: product.price,
-        description: product.description,
-        category: product.category,
-        stock: product.stock,
-        suppliers: product.suppliers,
-      });
-      toast.success("Medicine added to shop");
+      const { message } = await addCatalogToShopRequest(shopId, product.id);
+      setIsInShop(true);
+      toast.success(message || "Medicine added to shop");
     } catch (error) {
-      toast.error(getApiErrorMessage(error));
+      toast.error(
+        error instanceof Error ? error.message : getApiErrorMessage(error),
+      );
     } finally {
       setIsAdding(false);
     }
@@ -130,6 +139,7 @@ export function MedicinePage() {
       <ProductOverview
         medicine={medicine}
         isAdding={isAdding}
+        isInShop={isInShop}
         onAdd={handleAddToShop}
       />
       <TabsContainer

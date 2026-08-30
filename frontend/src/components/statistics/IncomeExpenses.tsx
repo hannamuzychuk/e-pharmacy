@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import GlobalStyles from "@mui/material/GlobalStyles";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import type {} from "@mui/x-date-pickers/themeAugmentation";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -90,32 +91,16 @@ const pickerTheme = createTheme({
         },
       },
     },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          "&.MuiPickerPopper-paper": {
-            marginTop: 8,
-            overflow: "hidden",
-            border: "1px solid rgba(89, 177, 122, 0.2)",
-            borderRadius: 20,
-            boxShadow:
-              "0 18px 40px rgba(29, 30, 33, 0.12), 0 4px 12px rgba(89, 177, 122, 0.12)",
-          },
-        },
-      },
-    },
     MuiPickerDay: {
       styleOverrides: {
         root: {
-          margin: "2px",
+          margin: "0 2px",
           fontSize: 13,
           fontWeight: 500,
           borderRadius: "50%",
-          transition:
-            "background-color 0.15s ease, color 0.15s ease, transform 0.15s ease",
+          transition: "background-color 0.15s ease, color 0.15s ease",
           "&:hover": {
             backgroundColor: "rgba(89, 177, 122, 0.14)",
-            transform: "scale(1.06)",
           },
           "&.Mui-selected": {
             backgroundColor: "#59b17a !important",
@@ -137,31 +122,21 @@ const pickerTheme = createTheme({
         },
       },
     },
-    MuiDayCalendar: {
-      styleOverrides: {
-        weekDayLabel: {
-          fontSize: 12,
-          fontWeight: 600,
-          color: "rgba(29, 30, 33, 0.4)",
-        },
-        header: {
-          paddingTop: 4,
-        },
-      },
-    },
     MuiPickersCalendarHeader: {
       styleOverrides: {
         root: {
-          marginTop: 4,
-          marginBottom: 4,
-          paddingLeft: 16,
-          paddingRight: 12,
+          margin: 0,
+          paddingTop: 4,
+          paddingBottom: 4,
+          paddingLeft: 12,
+          paddingRight: 8,
+          minHeight: 40,
           background:
             "linear-gradient(180deg, #e7f1ed 0%, rgba(231, 241, 237, 0.35) 100%)",
           borderBottom: "1px solid rgba(89, 177, 122, 0.12)",
         },
         label: {
-          fontSize: 15,
+          fontSize: 14,
           fontWeight: 600,
           color: "#1d1e21",
         },
@@ -180,20 +155,17 @@ const pickerTheme = createTheme({
         },
       },
     },
-    MuiDateCalendar: {
+    MuiDayCalendar: {
       styleOverrides: {
-        root: {
-          width: 320,
-          maxHeight: "none",
-          backgroundColor: "#fff",
+        weekDayLabel: {
+          fontSize: 12,
+          fontWeight: 600,
+          color: "rgba(29, 30, 33, 0.4)",
         },
       },
     },
     MuiYearCalendar: {
       styleOverrides: {
-        root: {
-          width: 320,
-        },
         button: {
           borderRadius: 12,
           fontWeight: 500,
@@ -206,6 +178,48 @@ const pickerTheme = createTheme({
     },
   },
 });
+
+const calendarNoScrollStyles = {
+  ".MuiPickerPopper-root": {
+    maxWidth: "100%",
+  },
+  ".MuiPickerPopper-paper, .MuiDialog-paper": {
+    boxSizing: "border-box",
+    width: "min(300px, calc(100vw - 24px))",
+    maxWidth: "calc(100vw - 24px)",
+    overflow: "hidden",
+    borderRadius: "20px",
+    border: "1px solid rgba(89, 177, 122, 0.2)",
+    boxShadow:
+      "0 18px 40px rgba(29, 30, 33, 0.12), 0 4px 12px rgba(89, 177, 122, 0.12)",
+  },
+  ".MuiPickerPopper-paper .MuiDateCalendar-root, .MuiDialog-paper .MuiDateCalendar-root":
+    {
+      width: "100% !important",
+      maxWidth: "100%",
+      height: "auto !important",
+      maxHeight: "none !important",
+      overflow: "visible !important",
+    },
+  ".MuiPickerPopper-paper .MuiYearCalendar-root, .MuiDialog-paper .MuiYearCalendar-root, .MuiPickerPopper-paper .MuiMonthCalendar-root, .MuiDialog-paper .MuiMonthCalendar-root":
+    {
+      width: "100% !important",
+      maxWidth: "100%",
+      height: "auto !important",
+      maxHeight: "none !important",
+      overflow: "visible !important",
+      overflowY: "visible !important",
+    },
+  ".MuiPickerPopper-paper .MuiDayCalendar-slideTransition, .MuiPickerPopper-paper .MuiDayCalendar-monthContainer, .MuiPickerPopper-paper .MuiPickersSlideTransition-root, .MuiDialog-paper .MuiDayCalendar-slideTransition, .MuiDialog-paper .MuiDayCalendar-monthContainer, .MuiDialog-paper .MuiPickersSlideTransition-root":
+    {
+      overflow: "visible !important",
+    },
+  ".MuiPickerPopper-paper .MuiPickersLayout-root, .MuiPickerPopper-paper .MuiPickersLayout-contentWrapper, .MuiDialog-paper .MuiPickersLayout-root, .MuiDialog-paper .MuiPickersLayout-contentWrapper":
+    {
+      overflow: "visible !important",
+      maxWidth: "100%",
+    },
+};
 
 function getItemsForDate(
   items: IncomeExpense[],
@@ -238,6 +252,7 @@ function getItemsForDate(
 
 export function IncomeExpenses({ items }: IncomeExpensesProps) {
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
   const isToday = selectedDate?.isSame(dayjs(), "day") ?? false;
   const dayLabel = !selectedDate
     ? "Select a day"
@@ -249,6 +264,16 @@ export function IncomeExpenses({ items }: IncomeExpensesProps) {
     () => getItemsForDate(items, selectedDate),
     [items, selectedDate],
   );
+
+  useEffect(() => {
+    if (!isPickerOpen) {
+      return;
+    }
+
+    const closePicker = () => setIsPickerOpen(false);
+    window.addEventListener("scroll", closePicker, true);
+    return () => window.removeEventListener("scroll", closePicker, true);
+  }, [isPickerOpen]);
 
   return (
     <section className={styles.card} aria-labelledby="income-expenses-title">
@@ -262,15 +287,24 @@ export function IncomeExpenses({ items }: IncomeExpensesProps) {
         <div className={styles.dateRow}>
           <p className={styles.today}>{dayLabel}</p>
           <ThemeProvider theme={pickerTheme}>
+            <GlobalStyles styles={calendarNoScrollStyles} />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Pick a date"
                 value={selectedDate}
                 onChange={setSelectedDate}
+                open={isPickerOpen}
+                onOpen={() => setIsPickerOpen(true)}
+                onClose={() => setIsPickerOpen(false)}
                 format="DD.MM.YYYY"
                 maxDate={dayjs()}
+                minDate={dayjs().subtract(10, "year")}
                 disableFuture
+                openTo="day"
                 views={["year", "month", "day"]}
+                yearsPerRow={3}
+                monthsPerRow={3}
+                desktopModeMediaQuery="@media (min-width: 0px)"
                 slotProps={{
                   textField: {
                     size: "small",
@@ -279,13 +313,38 @@ export function IncomeExpenses({ items }: IncomeExpensesProps) {
                   openPickerButton: {
                     className: styles.calendarBtn,
                   },
+                  popper: {
+                    disablePortal: true,
+                    placement: "bottom-end",
+                    className: styles.calendarPopper,
+                    modifiers: [
+                      {
+                        name: "offset",
+                        options: { offset: [0, 8] },
+                      },
+                      {
+                        name: "flip",
+                        options: {
+                          padding: 8,
+                          fallbackPlacements: ["top-end", "bottom-start"],
+                        },
+                      },
+                      {
+                        name: "preventOverflow",
+                        options: {
+                          altAxis: true,
+                          padding: 8,
+                          boundary: "clippingParents",
+                        },
+                      },
+                    ],
+                  },
                   desktopPaper: {
                     className: styles.calendarPaper,
                     elevation: 0,
-                  },
-                  mobilePaper: {
-                    className: styles.calendarPaper,
-                    elevation: 0,
+                    sx: {
+                      overflow: "hidden",
+                    },
                   },
                 }}
               />

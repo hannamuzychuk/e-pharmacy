@@ -1,32 +1,38 @@
 .pagination {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 4px;
+  width: 100%;
+  max-width: 100%;
   margin-top: 40px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .navGroup,
 .pageGroup {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 .pageBtn {
   box-sizing: border-box;
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 35px;
-  height: 35px;
+  width: 28px;
+  height: 28px;
   padding: 0;
   border: 1px solid rgba(29, 30, 33, 0.1);
   border-radius: 50%;
   background: var(--color-white);
   font: inherit;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 1;
   color: var(--color-text);
@@ -35,16 +41,16 @@
 
 .icon {
   display: block;
-  width: 8px;
-  height: 14px;
+  width: 7px;
+  height: 12px;
   flex-shrink: 0;
   fill: currentColor;
 }
 
 .iconDouble {
   display: block;
-  width: 15px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   flex-shrink: 0;
   fill: currentColor;
 }
@@ -79,10 +85,84 @@
 
 .ellipsis {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 35px;
-  height: 35px;
-  font-size: 14px;
+  width: 20px;
+  height: 28px;
+  font-size: 12px;
   color: var(--color-text);
+}
+
+@media (min-width: 375px) {
+  .pagination {
+    gap: 6px;
+  }
+
+  .navGroup,
+  .pageGroup {
+    gap: 6px;
+  }
+
+  .pageBtn {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .ellipsis {
+    width: 24px;
+    height: 32px;
+    font-size: 13px;
+  }
+}
+
+@media (min-width: 768px) {
+  .pagination {
+    gap: 24px;
+    overflow-x: visible;
+  }
+
+  .navGroup,
+  .pageGroup {
+    gap: 10px;
+  }
+
+  .pageBtn {
+    width: 44px;
+    height: 44px;
+    border-color: rgba(29, 30, 33, 0.2);
+    font-size: 16px;
+  }
+
+  .icon {
+    width: 8px;
+    height: 14px;
+  }
+
+  .iconDouble {
+    width: 15px;
+    height: 14px;
+  }
+
+  .pageBtn:disabled {
+    border-color: rgba(29, 30, 33, 0.05);
+    opacity: 1;
+    color: rgba(29, 30, 33, 0.5);
+  }
+
+  .pageBtnNumber {
+    border-color: rgba(29, 30, 33, 0.05);
+    background: var(--color-white);
+  }
+
+  .pageBtnActive {
+    border-color: var(--color-primary);
+  }
+
+  .ellipsis {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+  }
 }

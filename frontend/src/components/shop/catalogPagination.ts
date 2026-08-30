@@ -34,17 +34,17 @@ export function getPageItems(
   current: number,
   total: number,
 ): Array<number | "ellipsis"> {
-  if (total <= 4) {
+  if (total <= 3) {
     return Array.from({ length: total }, (_, index) => index + 1);
   }
 
   if (current <= 2) {
-    return [1, 2, 3, "ellipsis"];
+    return [1, 2, "ellipsis"];
   }
 
   if (current >= total - 1) {
-    return ["ellipsis", total - 2, total - 1, total];
+    return ["ellipsis", total - 1, total];
   }
 
-  return ["ellipsis", current - 1, current, current + 1, "ellipsis"];
+  return ["ellipsis", current, "ellipsis"];
 }

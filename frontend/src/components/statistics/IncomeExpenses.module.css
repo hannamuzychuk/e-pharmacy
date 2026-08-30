@@ -3,7 +3,7 @@
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid var(--color-border);
   border-radius: 8px;
   background: var(--color-white);
@@ -14,6 +14,8 @@
   align-items: center;
   height: 48px;
   padding: 0 14px;
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
   background: #e7f1ed;
 }
 
@@ -26,10 +28,14 @@
 }
 
 .body {
+  position: relative;
   padding: 14px 14px 20px;
+  overflow: visible;
 }
 
 .dateRow {
+  position: relative;
+  z-index: 3;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -47,15 +53,22 @@
 }
 
 .dateField {
-  width: 180px;
+  width: min(180px, 100%);
+  max-width: 100%;
 }
 
 .calendarBtn {
   margin-right: 2px;
 }
 
+.calendarPopper {
+  z-index: 5;
+}
+
 .calendarPaper {
-  overflow: hidden;
+  box-sizing: border-box !important;
+  width: min(300px, calc(100vw - 24px)) !important;
+  max-width: min(300px, 100%) !important;
   border-radius: 20px !important;
 }
 

@@ -1,7 +1,6 @@
-const mongoose = require("mongoose");
 const Product = require("../models/Product");
 const findProductByParam = require("../utils/findProduct");
-const { getReviewDisplayDate } = require("../utils/formatReviewDate");
+const { pickReviewsForProduct } = require("../utils/formatReviewDate");
 const HttpError = require("../utils/HttpError");
 
 function formatProduct(product) {
@@ -101,19 +100,9 @@ async function addProduct(req, res) {
 }
 
 async function getProduct(req, res) {
-  const reviews = await mongoose.connection.db
-    .collection("reviews")
-    .find()
-    .toArray();
-
   res.status(200).json({
     product: formatProduct(req.product),
-    reviews: reviews.map((review, index) => ({
-      id: review._id.toString(),
-      author: review.name,
-      date: getReviewDisplayDate(index),
-      text: review.testimonial,
-    })),
+    reviews: pickReviewsForProduct([], req.product),
   });
 }
 
@@ -150,7 +139,20 @@ async function addCatalogToShop(req, res) {
   });
 
   if (existing) {
-    throw new HttpError(409, "Product is already in your shop");
+    if (!existing.photo && source.photo) {
+      existing.photo = source.photo;
+      await existing.save();
+
+      return res.status(200).json({
+        message: "Product photo updated in your shop",
+        product: formatProduct(existing),
+      });
+    }
+
+    return res.status(200).json({
+      message: "Product is already in your shop",
+      product: formatProduct(existing),
+    });
   }
 
   const product = await Product.create({

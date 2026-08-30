@@ -4,12 +4,14 @@ import type { Medicine } from "./types";
 type ProductOverviewProps = {
   medicine: Medicine;
   isAdding: boolean;
+  isInShop?: boolean;
   onAdd: () => void;
 };
 
 export function ProductOverview({
   medicine,
   isAdding,
+  isInShop = false,
   onAdd,
 }: ProductOverviewProps) {
   return (
@@ -39,9 +41,9 @@ export function ProductOverview({
             className={`btn btnPrimary ${styles.addBtn}`}
             type="button"
             onClick={onAdd}
-            disabled={isAdding}
+            disabled={isAdding || isInShop}
           >
-            {isAdding ? "Adding..." : "Add to shop"}
+            {isInShop ? "In shop" : isAdding ? "Adding..." : "Add to shop"}
           </button>
         </div>
       </div>

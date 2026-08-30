@@ -3,7 +3,7 @@
   flex-direction: column;
   min-width: 320px;
   min-height: 100svh;
-  overflow-x: hidden;
+  max-width: 100%;
 }
 
 .main {

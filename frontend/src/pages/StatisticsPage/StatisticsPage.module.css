@@ -4,7 +4,6 @@
   max-width: 100%;
   min-width: 0;
   padding: 64px var(--container-padding) 80px;
-  overflow-x: hidden;
   background: var(--color-bg);
 }
 
