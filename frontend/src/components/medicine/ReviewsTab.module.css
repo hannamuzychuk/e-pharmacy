@@ -187,6 +187,12 @@
 
   .pageBtnActive {
     border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-white);
+  }
+
+  .pageBtnActive:hover:not(:disabled) {
+    background: var(--color-primary-hover);
   }
 
   .ellipsis {

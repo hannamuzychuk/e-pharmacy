@@ -47,7 +47,7 @@ export function ReviewsTab({ reviews }: ReviewsTabProps) {
         ))}
       </ul>
 
-      {totalPages > 1 ? (
+      {reviews.length > 0 ? (
         <nav className={styles.pagination} aria-label="Reviews pagination">
           <div className={styles.navGroup}>
             <button
@@ -77,7 +77,7 @@ export function ReviewsTab({ reviews }: ReviewsTabProps) {
           </div>
 
           <div className={styles.pageGroup}>
-            {pageItems.map((item, index) =>
+            {(totalPages <= 1 ? [currentPage] : pageItems).map((item, index) =>
               item === "ellipsis" ? (
                 <span
                   key={`ellipsis-${index}`}

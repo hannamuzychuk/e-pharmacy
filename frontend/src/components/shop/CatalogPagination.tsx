@@ -29,9 +29,8 @@ export function CatalogPagination({
   onPageChange,
   label = "Catalog pagination",
 }: CatalogPaginationProps) {
-  if (totalPages <= 1) {
-    return null;
-  }
+  const items =
+    totalPages <= 1 ? [currentPage] : pageItems;
 
   return (
     <nav className={styles.pagination} aria-label={label}>
@@ -60,7 +59,7 @@ export function CatalogPagination({
       </div>
 
       <div className={styles.pageGroup}>
-        {pageItems.map((item, index) =>
+        {items.map((item, index) =>
           item === "ellipsis" ? (
             <span key={`ellipsis-${index}`} className={styles.ellipsis}>
               ...
