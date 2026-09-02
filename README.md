@@ -157,7 +157,3 @@ Set `CLIENT_URL` to the frontend URL (no trailing slash).
 - **Rewrite:** `/*` → `/index.html` (SPA)
 
 Free Render instances may sleep after inactivity; the first request can take ~30–60s.
-
-## License
-
-ISC
