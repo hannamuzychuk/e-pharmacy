@@ -353,7 +353,7 @@
 
 @media (min-width: 375px) {
   .header {
-    padding: 25px 20px 0;
+    padding: 25px var(--container-padding) 0;
   }
 }
 
@@ -385,11 +385,7 @@
   }
 }
 
-@media (min-width: 1440px) {
-  .header {
-    padding: 28px 128px 0;
-  }
-
+@media (min-width: 769px) {
   .nav {
     position: absolute;
     left: 50%;
@@ -466,5 +462,11 @@
   .menuButton,
   .mobileMenu {
     display: none;
+  }
+}
+
+@media (min-width: 1440px) {
+  .header {
+    padding: 28px 128px 0;
   }
 }

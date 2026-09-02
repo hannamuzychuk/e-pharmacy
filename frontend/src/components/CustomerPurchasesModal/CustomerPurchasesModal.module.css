@@ -175,12 +175,6 @@
   color: var(--color-text);
 }
 
-@media (min-width: 375px) {
-  .modal {
-    max-width: 335px;
-  }
-}
-
 @media (min-width: 768px) {
   .modal {
     max-width: 613px;

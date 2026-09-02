@@ -214,12 +214,6 @@
   color: var(--color-primary);
 }
 
-@media (min-width: 375px) {
-  .product {
-    max-width: 335px;
-  }
-}
-
 @media (min-width: 768px) {
   .filters {
     grid-template-columns: minmax(200px, 214px) minmax(200px, 224px) auto;

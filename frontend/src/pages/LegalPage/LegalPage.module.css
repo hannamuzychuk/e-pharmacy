@@ -23,12 +23,6 @@
   margin: 0 0 16px;
 }
 
-@media (min-width: 375px) {
-  .page {
-    padding: 64px 20px 80px;
-  }
-}
-
 @media (min-width: 768px) {
   .page {
     padding: 80px 32px 120px;

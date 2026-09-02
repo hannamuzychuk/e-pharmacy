@@ -6,12 +6,6 @@
   background: var(--color-bg);
 }
 
-@media (min-width: 375px) {
-  .page {
-    padding: 64px 20px 80px;
-  }
-}
-
 @media (min-width: 768px) {
   .page {
     gap: 16px;

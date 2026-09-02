@@ -192,14 +192,6 @@
   bottom: 40px;
 }
 
-@media (min-width: 375px) {
-  .left,
-  .left h1,
-  .right {
-    max-width: 335px;
-  }
-}
-
 @media (min-width: 768px) {
   .page {
     gap: 54px;

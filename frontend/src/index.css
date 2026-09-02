@@ -29,6 +29,7 @@
   --bp-mobile-adaptive: 375px;
   --bp-tablet: 768px;
   --bp-desktop: 1440px;
+  --layout-max-width: 1440px;
 
   --container-padding: 16px;
   --content-max-width: 100%;
@@ -40,6 +41,27 @@
   :root {
     --container-padding: 20px;
     --content-max-width: 335px;
+  }
+}
+
+@media (min-width: 375px) and (max-width: 767px) {
+  :root {
+    --container-padding: clamp(
+      20px,
+      calc(20px + (100vw - 375px) * 12 / 393),
+      32px
+    );
+    --content-max-width: clamp(
+      335px,
+      calc(335px + (100vw - 375px) * 369 / 393),
+      704px
+    );
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --content-max-width: 100%;
   }
 }
 

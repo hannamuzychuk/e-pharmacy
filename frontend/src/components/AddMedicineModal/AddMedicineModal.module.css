@@ -224,12 +224,6 @@
   font-weight: 400;
 }
 
-@media (min-width: 375px) {
-  .modal {
-    max-width: 335px;
-  }
-}
-
 @media (min-width: 768px) {
   .modal {
     max-width: 568px;

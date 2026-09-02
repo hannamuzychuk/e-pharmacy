@@ -219,12 +219,6 @@
   border-radius: 24px;
 }
 
-@media (min-width: 375px) {
-  .product {
-    max-width: 335px;
-  }
-}
-
 @media (min-width: 768px) {
   .page {
     padding: 80px 32px 120px;

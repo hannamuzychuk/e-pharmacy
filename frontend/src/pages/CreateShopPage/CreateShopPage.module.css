@@ -241,13 +241,6 @@
   border-radius: 27px;
 }
 
-@media (min-width: 375px) {
-  .card,
-  .imageWrap {
-    max-width: 335px;
-  }
-}
-
 @media (min-width: 768px) {
   .page {
     gap: 20px;
@@ -256,6 +249,7 @@
 
   .card {
     max-width: 704px;
+    margin-inline: auto;
     padding: 40px 38px;
   }
 
@@ -298,6 +292,7 @@
 
   .imageWrap {
     max-width: 704px;
+    margin-inline: auto;
   }
 
   .image {
