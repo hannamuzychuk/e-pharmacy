@@ -8,11 +8,11 @@ import { getApiErrorMessage } from "../../services/http";
 import { useAuth } from "../../store/auth";
 import styles from "./CreateShopPage.module.css";
 import { ResponsivePicture } from "../../components/ResponsivePicture/ResponsivePicture";
+import { ShopLogoPreview } from "../../components/ShopLogoPreview/ShopLogoPreview";
 import {
   createShopDesktop,
   createShopMobile,
   createShopTablet,
-  defaultShopLogo,
 } from "../../images/assets";
 
 type CreateShopFormValues = {
@@ -37,7 +37,7 @@ export function CreateShopPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState(defaultShopLogo);
+  const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (shopId) {
@@ -58,11 +58,11 @@ export function CreateShopPage() {
 
   useEffect(() => {
     return () => {
-      if (logoPreview.startsWith("blob:")) {
-        URL.revokeObjectURL(logoPreview);
+      if (logoPreviewUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(logoPreviewUrl);
       }
     };
-  }, [logoPreview]);
+  }, [logoPreviewUrl]);
 
   const onInvalid = (formErrors: typeof errors) => {
     const message = Object.values(formErrors)
@@ -94,12 +94,12 @@ export function CreateShopPage() {
       return;
     }
 
-    if (logoPreview.startsWith("blob:")) {
-      URL.revokeObjectURL(logoPreview);
+    if (logoPreviewUrl?.startsWith("blob:")) {
+      URL.revokeObjectURL(logoPreviewUrl);
     }
 
     setLogoFile(file);
-    setLogoPreview(URL.createObjectURL(file));
+    setLogoPreviewUrl(URL.createObjectURL(file));
   };
 
   const onSubmit = async (data: CreateShopFormValues) => {
@@ -309,10 +309,9 @@ export function CreateShopPage() {
           </div>
 
           <div className={styles.logoRow}>
-            <img
+            <ShopLogoPreview
+              previewUrl={logoPreviewUrl}
               className={styles.logoPreview}
-              src={logoPreview}
-              alt="Shop logo preview"
               width={44}
               height={44}
             />

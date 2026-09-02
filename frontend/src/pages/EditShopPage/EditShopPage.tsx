@@ -8,12 +8,12 @@ import { getApiErrorMessage } from "../../services/http";
 import { useAuth } from "../../store/auth";
 import styles from "../CreateShopPage/CreateShopPage.module.css";
 import { ResponsivePicture } from "../../components/ResponsivePicture/ResponsivePicture";
+import { ShopLogoPreview } from "../../components/ShopLogoPreview/ShopLogoPreview";
 import { Loader } from "../../components/Loader/Loader";
 import {
   createShopDesktop,
   createShopMobile,
   createShopTablet,
-  defaultShopLogo,
 } from "../../images/assets";
 import { resolveApiUrl } from "../../utils/apiBase";
 
@@ -43,9 +43,9 @@ const enableAutofill = (event: React.FocusEvent<HTMLInputElement>) => {
   event.currentTarget.removeAttribute("readOnly");
 };
 
-function resolveLogoUrl(logoUrl: string | null) {
+function resolveLogoUrl(logoUrl: string | null): string | null {
   if (!logoUrl) {
-    return defaultShopLogo;
+    return null;
   }
 
   if (logoUrl.startsWith("http")) {
@@ -56,7 +56,7 @@ function resolveLogoUrl(logoUrl: string | null) {
     return resolveApiUrl(logoUrl);
   }
 
-  return defaultShopLogo;
+  return null;
 }
 
 export function EditShopPage() {
@@ -66,7 +66,7 @@ export function EditShopPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState(defaultShopLogo);
+  const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
 
   const {
     register,
@@ -97,7 +97,7 @@ export function EditShopPage() {
           zipCode: shop.zipCode,
           hasDelivery: shop.hasDelivery,
         });
-        setLogoPreview(resolveLogoUrl(shop.logoUrl));
+        setLogoPreviewUrl(resolveLogoUrl(shop.logoUrl));
       } catch (error) {
         toast.error(getApiErrorMessage(error));
         navigate("/shop", { replace: true });
@@ -111,11 +111,11 @@ export function EditShopPage() {
 
   useEffect(() => {
     return () => {
-      if (logoPreview.startsWith("blob:")) {
-        URL.revokeObjectURL(logoPreview);
+      if (logoPreviewUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(logoPreviewUrl);
       }
     };
-  }, [logoPreview]);
+  }, [logoPreviewUrl]);
 
   const onInvalid = (formErrors: typeof errors) => {
     const messages = Object.values(formErrors)
@@ -147,12 +147,12 @@ export function EditShopPage() {
       return;
     }
 
-    if (logoPreview.startsWith("blob:")) {
-      URL.revokeObjectURL(logoPreview);
+    if (logoPreviewUrl?.startsWith("blob:")) {
+      URL.revokeObjectURL(logoPreviewUrl);
     }
 
     setLogoFile(file);
-    setLogoPreview(URL.createObjectURL(file));
+    setLogoPreviewUrl(URL.createObjectURL(file));
   };
 
   const onSubmit = async (data: EditShopFormValues) => {
@@ -353,10 +353,9 @@ export function EditShopPage() {
           </div>
 
           <div className={styles.logoRow}>
-            <img
+            <ShopLogoPreview
+              previewUrl={logoPreviewUrl}
               className={styles.logoPreview}
-              src={logoPreview}
-              alt="Shop logo preview"
               width={44}
               height={44}
             />

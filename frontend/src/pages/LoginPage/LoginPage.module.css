@@ -97,6 +97,12 @@
   border-color: var(--color-primary);
 }
 
+.input:has(+ .error),
+.input:has(+ .error):hover,
+.input:has(+ .error):focus {
+  border-color: var(--color-error);
+}
+
 .input:-webkit-autofill,
 .input:-webkit-autofill:hover,
 .input:-webkit-autofill:focus {
