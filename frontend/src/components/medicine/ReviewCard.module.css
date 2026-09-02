@@ -7,6 +7,13 @@
   background: var(--color-white);
 }
 
+.top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .author {
   margin: 0;
   font-size: 16px;
@@ -21,6 +28,39 @@
   font-weight: 400;
   line-height: 1.5;
   color: var(--color-text-secondary);
+}
+
+.rating {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 2px;
+}
+
+.starWrap {
+  position: relative;
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.starFilled {
+  display: block;
+  color: var(--color-primary);
+}
+
+.starHalf {
+  position: absolute;
+  inset: 0;
+  display: block;
+  color: var(--color-primary);
+  clip-path: inset(0 50% 0 0);
+}
+
+.starEmpty {
+  display: block;
+  color: rgba(29, 30, 33, 0.15);
 }
 
 .text {

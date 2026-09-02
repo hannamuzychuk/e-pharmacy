@@ -85,6 +85,7 @@ export type ProductReview = {
   author: string;
   date: string;
   text: string;
+  rating: number;
 };
 
 export async function getProductRequest(shopId: string, productId: string) {

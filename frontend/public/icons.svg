@@ -242,4 +242,11 @@
       fill="currentColor"
     />
   </symbol>
+
+  <symbol id="icon-star" viewBox="0 0 16 16" fill="none">
+    <path
+      d="M8 1.33398L9.88065 5.74732L14.6667 6.41398L11.3333 9.74732L12.2133 14.6673L8 12.334L3.78667 14.6673L4.66667 9.74732L1.33333 6.41398L6.11935 5.74732L8 1.33398Z"
+      fill="currentColor"
+    />
+  </symbol>
 </svg>

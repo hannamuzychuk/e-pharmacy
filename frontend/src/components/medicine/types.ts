@@ -3,6 +3,7 @@ export type Review = {
   author: string;
   date: string;
   text: string;
+  rating: number;
 };
 
 export type DescriptionBlock = {

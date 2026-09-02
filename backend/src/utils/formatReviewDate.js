@@ -76,11 +76,14 @@ function pickReviewsForProduct(_sharedReviews, product) {
   const shuffled = seededShuffle(templates, seed);
   const count = 3 + (seed % 2);
 
+  const ratings = [4, 4.5, 5];
+
   return shuffled.slice(0, count).map((item, index) => ({
     id: `${productId}-review-${index}`,
     author: item.author,
     date: getReviewDisplayDate((seed + index * 3) % REVIEW_DISPLAY_DATES.length),
     text: item.text,
+    rating: ratings[(seed + index * 7) % ratings.length],
   }));
 }
 

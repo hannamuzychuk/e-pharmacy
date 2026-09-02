@@ -41,6 +41,7 @@ function toMedicine(
       author: review.author,
       date: review.date,
       text: review.text,
+      rating: review.rating ?? 5,
     })),
   };
 }
